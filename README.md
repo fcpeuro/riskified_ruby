@@ -1,42 +1,30 @@
-# Riskified
+# Riskified API Client
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/riskified`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Ruby client for the [Riskified API](https://apiref.riskified.com) using [Faraday](https://github.com/technoweenie/faraday).  Ruby > 2.0 is required.
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
-```ruby
-gem 'riskified'
-```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install riskified
+    $ gem 'riskified_ruby', github: 'fcpeuro/riskified_ruby'
 
 ## Usage
 
-## API keys
+### API keys
 
-API keys must be configured in the gem setup. You can do this anywhere in your application before you make API calls using the gem.
+Credentials must be configured before you make API calls using the gem.
 
 ```ruby
 Riskified.configure do |config|
-  config.auth_token = ''
-  config.default_referrer = ''
-  config.sandbox_mode = ''
+  config.auth_token = 'rw342fdj534'
+  config.default_referrer = 'www.example.com'
+  config.sandbox_mode = true
 end
 ```
 
 * `config.auth_token` - your Riskified access key
 * `config.default_referrer` - Default referrer
-* `config.sandbox_mode` - Decide whether or not to use sandbox endpoints
+* `config.sandbox_mode` - Decide whether or not to use the sandbox endpoint
 
 The keys are available to you throughout your application as:
 
@@ -46,20 +34,17 @@ Riskified.configuration.default_referrer
 Riskified.configuration.sandbox_mode
 ```
 
-## Development
+### Creating the client
 
-After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+```ruby
+client = Riskified::Client.new
+client.checkout_create(order)
+```
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/riskified. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
-
-## License
-
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
-
-## Code of Conduct
-
-Everyone interacting in the Riskified project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/riskified/blob/master/CODE_OF_CONDUCT.md).
+1. Fork it
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Commit your changes (`git commit -am 'Added some feature'`)
+4. Push to the branch (`git push origin my-new-feature`)
+5. Create new Pull Request

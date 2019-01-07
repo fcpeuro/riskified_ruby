@@ -1,12 +1,13 @@
 require "riskified/version"
 require 'riskified/configuration'
+require 'riskified/client'
 
 module Riskified
   class << self
     attr_accessor :configuration
   end
 
-  def self.configuration
+  def self.config
     @configuration ||= Configuration.new
   end
 
