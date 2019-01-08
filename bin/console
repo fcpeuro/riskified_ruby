@@ -13,6 +13,6 @@ require "riskified"
 require "irb"
 IRB.conf[:AUTO_INDENT] = true
 
-puts 'Riskied loaded.'
+puts 'Riskified loaded.'
 
 IRB.start(__FILE__)
