@@ -16,6 +16,6 @@ module Riskified
   end
 
   def self.configure
-    yield(configuration)
+    yield(config)
   end
 end

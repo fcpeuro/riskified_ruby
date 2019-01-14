@@ -1,6 +1,6 @@
 module Riskified
   class Configuration
-    attr_accessor :sandbox_mode, :auth_token,:default_referrer, :shop_domain
+    attr_accessor :sandbox_mode, :auth_token, :default_referrer, :shop_domain
 
     def initialize
       @sandbox_mode = nil

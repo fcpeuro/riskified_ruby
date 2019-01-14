@@ -1,6 +1,9 @@
 require "faraday"
+require "faraday_middleware"
 require "openssl"
 require 'json'
+
+require 'riskified/configuration'
 
 module Riskified
   class Client
@@ -36,27 +39,25 @@ module Riskified
 
     def establish_connection(body)
       @connection ||= Faraday.new(base_url) do |connection|
-        connection.request :url_encoded
-        connection.adapter Faraday.default_adapter
         connection.headers = {
           "Content-Type": "application/json",
           "ACCEPT": "application/vnd.riskified.com; version=2",
           "X-RISKIFIED-SHOP-DOMAIN": Riskified.config.shop_domain,
           "X-RISKIFIED-HMAC-SHA256": calc_hmac(body)
         }
+        connection.request :json
+        connection.adapter Faraday.default_adapter
       end
     end
     
     def calc_hmac(body)
-      OpenSSL::HMAC.hexdigest('SHA256', Riskified.config.auth_token, body)
+      OpenSSL::HMAC.hexdigest('SHA256', Riskified.config.auth_token, body.to_json)
     end
 
     def post_request(endpoint, params={})
-      establish_connection(params.to_json)
+      establish_connection(params)
       
-      puts @connection.headers
-      
-      response = @connection.public_send(:post, endpoint, params.to_json)
+      response = @connection.public_send(:post, endpoint, params)
       parsed_response = JSON.parse(response.body)
       
       if response_successful?(response)
