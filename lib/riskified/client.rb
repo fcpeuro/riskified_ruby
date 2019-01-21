@@ -1,5 +1,4 @@
-require "faraday"
-require "faraday_middleware"
+require "typhoeus"
 require "openssl"
 require 'json'
 
@@ -14,6 +13,10 @@ module Riskified
     def checkout_create(body)
       post_request("/api/checkout_create", body)
     end
+    
+    def create(body)
+      post_request("/api/create", body)
+    end  
     
     def update(body)
       post_request("/api/update", body)
@@ -36,39 +39,46 @@ module Riskified
     def base_url
       Riskified.config.sandbox_mode == true ? SANDBOX_URL : LIVE_URL
     end
-
-    def establish_connection(body)
-      @connection ||= Faraday.new(base_url) do |connection|
-        connection.headers = {
+    
+    def calc_hmac(body)
+      OpenSSL::HMAC.hexdigest('SHA256', Riskified.config.auth_token, body)
+    end
+    
+    def post_request(endpoint, body)
+      formatted_body = body.to_json
+      
+      request = Typhoeus::Request.new(
+        (base_url + endpoint),
+        method: :post,
+        body: formatted_body,
+        headers: {
           "Content-Type": "application/json",
           "ACCEPT": "application/vnd.riskified.com; version=2",
           "X-RISKIFIED-SHOP-DOMAIN": Riskified.config.shop_domain,
-          "X-RISKIFIED-HMAC-SHA256": calc_hmac(body)
+          "X-RISKIFIED-HMAC-SHA256": calc_hmac(formatted_body)
         }
-        connection.request :json
-        connection.adapter Faraday.default_adapter
+      )
+      # This is a callback for when the request finishes. It needs to be defined before running the actual request is run.
+      handle_response(request)
+      
+      request.run
+    end
+    
+    def handle_response(request)
+      request.on_complete do |response|
+        if response.success?
+          
+        elsif response.timed_out?
+          
+        elsif response.code == 0
+          # Could not get an http response, something's wrong.
+          # log(response.return_message)
+        else
+          # Received a non-successful http response.
+          # log("HTTP request failed: " + response.code.to_s)
+        end
       end
     end
     
-    def calc_hmac(body)
-      OpenSSL::HMAC.hexdigest('SHA256', Riskified.config.auth_token, body.to_json)
-    end
-
-    def post_request(endpoint, params={})
-      establish_connection(params)
-      
-      response = @connection.public_send(:post, endpoint, params)
-      parsed_response = JSON.parse(response.body)
-      
-      if response_successful?(response)
-        parsed_response 
-      else
-        { status: response.status, response: response.body }
-      end
-    end
-
-    def response_successful?(response)
-      response.status == 200 || 201
-    end
   end
 end
