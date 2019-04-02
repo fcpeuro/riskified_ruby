@@ -52,19 +52,17 @@ module Riskified
       OpenSSL::HMAC.hexdigest('SHA256', Riskified.config.auth_token, body)
     end
 
-    def post_request(endpoint, body)
-      formatted_body = body.to_json
-
+    def post_request(endpoint, json_formatted_body)
       request = Typhoeus::Request.new(
-        (base_url + endpoint),
-        method: :post,
-        body: formatted_body,
-        headers: {
-          "Content-Type": "application/json",
-          "ACCEPT": "application/vnd.riskified.com; version=2",
-          "X-RISKIFIED-SHOP-DOMAIN": Riskified.config.shop_domain,
-          "X-RISKIFIED-HMAC-SHA256": calc_hmac(formatted_body)
-        }
+          (base_url + endpoint),
+          method: :post,
+          body: json_formatted_body,
+          headers: {
+              "Content-Type" : "application/json",
+              "ACCEPT" : "application/vnd.riskified.com; version=2",
+              "X-RISKIFIED-SHOP-DOMAIN" : Riskified.config.shop_domain,
+              "X-RISKIFIED-HMAC-SHA256" : calc_hmac(json_formatted_body)
+          }
       )
 
       request.run
