@@ -10,62 +10,64 @@ module Riskified
     SANDBOX_URL = "https://sandbox.riskified.com".freeze
     LIVE_URL = "https://wh.riskified.com".freeze
 
-    def decide(body)
-      post_request("/api/decide", body)
+    def decide(json_body)
+      post_request("/api/decide", json_body)
     end
 
-    def submit(body)
-      post_request("/api/submit", body)
+    def submit(json_body)
+      post_request("/api/submit", json_body)
     end
 
-    def checkout_create(body)
-      post_request("/api/checkout_create", body)
+    def checkout_create(json_body)
+      post_request("/api/checkout_create", json_body)
     end
 
-    def create(body)
-      post_request("/api/create", body)
+    def create(json_body)
+      post_request("/api/create", json_body)
     end
 
-    def update(body)
-      post_request("/api/update", body)
+    def update(json_body)
+      post_request("/api/update", json_body)
     end
 
-    def checkout_denied(body)
-      post_request("/api/checkout_denied", body)
+    def checkout_denied(json_body)
+      post_request("/api/checkout_denied", json_body)
     end
 
-    def cancel(body)
-      post_request("/api/cancel", body)
+    def cancel(json_body)
+      post_request("/api/cancel", json_body)
     end
 
-    def refund(body)
-      post_request("/api/refund", body)
+    def refund(json_body)
+      post_request("/api/refund", json_body)
     end
 
     private
 
-    def base_url
-      Riskified.config.sandbox_mode == true ? SANDBOX_URL : LIVE_URL
-    end
-
-    def calc_hmac(body)
-      OpenSSL::HMAC.hexdigest('SHA256', Riskified.config.auth_token, body)
-    end
-
     def post_request(endpoint, json_formatted_body)
-      request = Typhoeus::Request.new(
+      Typhoeus::Request.new(
           (base_url + endpoint),
           method: :post,
           body: json_formatted_body,
-          headers: {
-              "Content-Type" : "application/json",
-              "ACCEPT" : "application/vnd.riskified.com; version=2",
-              "X-RISKIFIED-SHOP-DOMAIN" : Riskified.config.shop_domain,
-              "X-RISKIFIED-HMAC-SHA256" : calc_hmac(json_formatted_body)
-          }
-      )
+          headers: headers(json_formatted_body)
+      ).run
+    end
 
-      request.run
+    def base_url
+      Riskified.config.sandbox_mode === true ? SANDBOX_URL : LIVE_URL
+    end
+
+    def headers(body)
+      {
+          "Content-Type": "application/json",
+          "ACCEPT": "application/vnd.riskified.com; version=2",
+          "X-RISKIFIED-SHOP-DOMAIN": Riskified.config.shop_domain,
+          "X-RISKIFIED-HMAC-SHA256": calculate_hmac_sha256(body)
+      }
+    end
+
+    def calculate_hmac_sha256(body)
+      OpenSSL::HMAC.hexdigest('SHA256', Riskified.config.auth_token, body)
     end
 
   end
