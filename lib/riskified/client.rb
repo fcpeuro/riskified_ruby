@@ -10,6 +10,10 @@ module Riskified
     SANDBOX_URL = "https://sandbox.riskified.com".freeze
     LIVE_URL = "https://wh.riskified.com".freeze
 
+    def decide(body)
+      post_request("/api/decide", body)
+    end
+
     def submit(body)
       post_request("/api/submit", body)
     end
