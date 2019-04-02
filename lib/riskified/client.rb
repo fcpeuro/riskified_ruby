@@ -61,9 +61,17 @@ module Riskified
       {
           "Content-Type": "application/json",
           "ACCEPT": "application/vnd.riskified.com; version=2",
-          "X-RISKIFIED-SHOP-DOMAIN": Riskified.config.shop_domain,
+          "X-RISKIFIED-SHOP-DOMAIN": shop,
           "X-RISKIFIED-HMAC-SHA256": calculate_hmac_sha256(body)
       }
+    end
+
+    def shop
+      shop = Riskified.config.shop_domain
+
+      raise Exception('The required "shop domain" header is not found.') if shop.nil?
+
+      shop
     end
 
     def calculate_hmac_sha256(body)
