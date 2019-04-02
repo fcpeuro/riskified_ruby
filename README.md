@@ -6,7 +6,7 @@ Ruby client for the [Riskified API](https://apiref.riskified.com) using [Faraday
 
 Add this line to your application's Gemfile:
 
-    $ gem 'riskified_ruby', github: 'fcpeuro/riskified_ruby'
+    $ gem 'riskified_ruby', github: 'cgservices/riskified_ruby'
 
 ## Usage
 
@@ -40,11 +40,3 @@ Riskified.configuration.sandbox_mode
 client = Riskified::Client.new
 client.checkout_create(order)
 ```
-
-## Contributing
-
-1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Added some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request

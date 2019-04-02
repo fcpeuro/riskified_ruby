@@ -6,12 +6,12 @@ require "riskified/version"
 Gem::Specification.new do |spec|
   spec.name          = "riskified_ruby"
   spec.version       = Riskified::VERSION
-  spec.authors       = ["Julie Marin"]
+  spec.authors       = ["Mahmoud Zalt", "Julie Marin"]
   spec.email         = ["julie.sylvana.marin@gmail.com"]
 
   spec.summary       = "Ruby bindings for the Riskified API"
   spec.description   = "Ruby library for integrating with the Riskified API"
-  spec.homepage      = "https://github.com/JulieMarin/riskified_ruby"
+  spec.homepage      = "https://github.com/cgservices/riskified_ruby"
   spec.license       = "MIT"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
