@@ -16,27 +16,38 @@ Credentials must be configured before you make API calls using the gem.
 
 ```ruby
 Riskified.configure do |config|
-  config.auth_token = 'rw342fdj534'
-  config.default_referrer = 'www.example.com'
-  config.sandbox_mode = true
+  config.auth_token = 'xyz123'
+  config.shop_domain = 'www.example.nl'
+  config.default_referrer = 'www.example.nl'
+  config.sandbox_mode = true  # if using rails: !Rails.env.production?
 end
+```
+
+You can set these values in your `.env` file 
+
+```dotenv
+RISKIFIED_SHOP_DOMAIN=www.example.nl
+RISKIFIED_DEFAULT_REFERRER=www.example.nl
+RISKIFIED_AUTH_TOKEN=xyz123
 ```
 
 * `config.auth_token` - your Riskified access key
 * `config.default_referrer` - Default referrer
+* `config.shop_domain` - Shop domain
 * `config.sandbox_mode` - Decide whether or not to use the sandbox endpoint
 
 The keys are available to you throughout your application as:
 
 ```ruby
-Riskified.configuration.auth_token
-Riskified.configuration.default_referrer
-Riskified.configuration.sandbox_mode
+Riskified.config.auth_token
+Riskified.config.shop_domain
+Riskified.config.default_referrer
+Riskified.config.sandbox_mode
 ```
 
 ### Creating the client
 
 ```ruby
 client = Riskified::Client.new
-client.checkout_create(order)
+client.checkout_create(json_order)
 ```
