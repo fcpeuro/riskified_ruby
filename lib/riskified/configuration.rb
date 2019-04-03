@@ -10,8 +10,8 @@ module Riskified
     end
 
     def validate
-      raise Exception.new('The "RISKIFIED_AUTH_TOKEN" environment variable is not found.') if @auth_token.blank? || @auth_token.nil?
-      raise Exception.new('The "RISKIFIED_SHOP_DOMAIN" environment variable is not found.') if @shop_domain.blank? || @shop_domain.nil?
+      raise Exception.new('The "RISKIFIED_AUTH_TOKEN" is not found.') if @auth_token.nil? || @auth_token.empty?
+      raise Exception.new('The "RISKIFIED_SHOP_DOMAIN" is not found.') if @shop_domain.nil? || @shop_domain.empty?
     end
 
   end
