@@ -1,3 +1,6 @@
+require 'dotenv'
+Dotenv.load
+
 ENV["RAILS_ENV"] ||= 'test'
 require './lib/riskified'
 
