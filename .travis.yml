@@ -10,6 +10,5 @@ jobs:
       env:
         - RISKIFIED_SHOP_DOMAIN=www.recharge.com
         - RISKIFIED_DEFAULT_REFERRER=www.cg.nl
-        - RISKIFIED_AUTH_TOKEN=<in-travis>
       script:
         - bundle exec rspec

@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'SecureRandom'
+require 'securerandom'
 require 'byebug'
 
 module Riskified
