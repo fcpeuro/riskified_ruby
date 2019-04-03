@@ -42,7 +42,7 @@ module Riskified
 
       context 'Sync flow' do
 
-        it "Submits checkout create" do
+        it "Submits decide" do
           response = JSON.parse(@client.decide(order.to_json).body)
           expect(response["order"]).not_to be_falsey
         end
