@@ -7,9 +7,9 @@ module Riskified
       
     before(:all) do
       Riskified.configure do |config|
-        config.default_referrer = 'www.example.com'
-        config.shop_domain = 'example.com'
-        config.auth_token = "<auth_token>"
+        config.auth_token = '<auth_token>'
+        config.default_referrer = 'www.cg.nl'
+        config.shop_domain = 'www.recharge.com'
         config.sandbox_mode = true
       end
       
@@ -18,7 +18,7 @@ module Riskified
     end
     
     before(:each) do
-      @order_num = "R" + ((SecureRandom.random_number(9e5) + 1e8).to_i).to_s
+      @order_num = "CG" + ((SecureRandom.random_number(9e5) + 1e8).to_i).to_s
     end
     
     def configure_payload(payload)
@@ -41,35 +41,40 @@ module Riskified
         expect(@data).to be_an_instance_of(Hash)
       end
       
+      it "Submits submit" do
+        response = JSON.parse(@client.submit(order.to_json).body)
+        expect(response["order"]).not_to be_falsey
+      end
+
       it "Submits checkout create" do
-        response = JSON.parse(@client.checkout_create(checkout).body)
+        response = JSON.parse(@client.checkout_create(checkout.to_json).body)
         expect(response["checkout"]).not_to be_falsey
       end
-      
+
       it "Submits checkout denied" do
-        response = JSON.parse(@client.checkout_denied(checkout).body)
+        response = JSON.parse(@client.checkout_denied(checkout.to_json).body)
         expect(response["checkout"]).not_to be_falsey
       end
       
       it "Submits create" do
-        response = JSON.parse(@client.create(order).body)
+        response = JSON.parse(@client.create(order.to_json).body)
         expect(response["order"]).not_to be_falsey
       end
       
       it "Submits update" do
-        response = JSON.parse(@client.update(order).body)
+        response = JSON.parse(@client.update(order.to_json).body)
         expect(response["order"]).not_to be_falsey
       end
 
       it "Submits refund" do
-        @client.create(order)
-        response = JSON.parse(@client.refund(refund).body)
+        @client.create(order.to_json)
+        response = JSON.parse(@client.refund(refund.to_json).body)
         expect(response["order"]).not_to be_falsey
       end
       
       it "Submits cancellation" do
-        @client.create(order)
-        response = JSON.parse(@client.cancel(cancelled_order).body)
+        @client.create(order.to_json)
+        response = JSON.parse(@client.cancel(cancelled_order.to_json).body)
         expect(response["order"]).not_to be_falsey
       end
       

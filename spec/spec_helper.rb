@@ -1,7 +1,6 @@
 ENV["RAILS_ENV"] ||= 'test'
 require './lib/riskified'
 
-
 RSpec.configure do |config|
   config.color = true
 
@@ -10,7 +9,6 @@ RSpec.configure do |config|
 
   # Use the specified formatter
   config.formatter = :documentation # :progress, :html,
-
 
   config.backtrace_exclusion_patterns << /gems/
   config.backtrace_exclusion_patterns << /<main>/
