@@ -36,5 +36,5 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "typhoeus", "~> 1.3.1"
   spec.add_dependency "rspec", "~> 3.7.0"
-  spec.add_dependency "dotenv"
+  spec.add_dependency "dotenv", "~> 2.5.0"
 end
