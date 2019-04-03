@@ -11,6 +11,10 @@ module Riskified
     @configuration ||= Configuration.new
   end
 
+  def self.validate_configuration
+    @configuration.validate
+  end
+
   def self.reset
     @configuration = Configuration.new
   end
