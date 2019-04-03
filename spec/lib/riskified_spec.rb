@@ -7,9 +7,9 @@ module Riskified
       
     before(:all) do
       Riskified.configure do |config|
-        config.auth_token = '<auth_token>'
-        config.default_referrer = 'www.cg.nl'
-        config.shop_domain = 'www.recharge.com'
+        config.auth_token = ENV["RISKIFIED_AUTH_TOKEN"]
+        config.default_referrer = ENV["RISKIFIED_DEFAULT_REFERRER"]
+        config.shop_domain = ENV["RISKIFIED_SHOP_DOMAIN"]
         config.sandbox_mode = true
       end
       
