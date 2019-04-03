@@ -1,0 +1,15 @@
+jobs:
+  include:
+    - stage: test
+      dist: trusty
+      sudo: required
+      language: ruby
+      cache:
+        - bundler
+      rvm: 2.4.4
+      env:
+        - RISKIFIED_SHOP_DOMAIN=www.recharge.com
+        - RISKIFIED_DEFAULT_REFERRER=www.cg.nl
+        - RISKIFIED_AUTH_TOKEN=<in-travis>
+      script:
+        - bundle exec rspec
