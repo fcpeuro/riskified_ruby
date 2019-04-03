@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.name          = "riskified_ruby"
   spec.version       = Riskified::VERSION
   spec.authors       = ["Mahmoud Zalt", "Julie Marin"]
-  spec.email         = ["julie.sylvana.marin@gmail.com"]
+  spec.email         = ["mahmoud.al.zalat@cg.nl", "julie.sylvana.marin@gmail.com"]
 
   spec.summary       = "Ruby bindings for the Riskified API"
   spec.description   = "Ruby library for integrating with the Riskified API"
