@@ -62,7 +62,13 @@ module Riskified
         raise Riskified::Exceptions::ApiConnectionError.new e.message
       end
 
+      validate_response response
+
       response
+    end
+
+    def validate_response(response)
+      raise Riskified::Exceptions::ApiConnectionError.new "Response Failed. Code: #{response.code}. Message: #{response.status_message}." if response.code != 200
     end
 
     def convert_to_json(riskified_order)
