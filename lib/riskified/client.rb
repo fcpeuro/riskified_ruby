@@ -14,41 +14,43 @@ module Riskified
       Riskified.validate_configuration
     end
 
-    def decide(json_body)
-      post_request("/api/decide", json_body)
+    def decide(riskified_order)
+      post_request("/api/decide", riskified_order)
     end
 
-    def submit(json_body)
-      post_request("/api/submit", json_body)
+    def submit(riskified_order)
+      post_request("/api/submit", riskified_order)
     end
 
-    def checkout_create(json_body)
-      post_request("/api/checkout_create", json_body)
+    def checkout_create(riskified_order)
+      post_request("/api/checkout_create", riskified_order)
     end
 
-    def create(json_body)
-      post_request("/api/create", json_body)
+    def create(riskified_order)
+      post_request("/api/create", riskified_order)
     end
 
-    def update(json_body)
-      post_request("/api/update", json_body)
+    def update(riskified_order)
+      post_request("/api/update", riskified_order)
     end
 
-    def checkout_denied(json_body)
-      post_request("/api/checkout_denied", json_body)
+    def checkout_denied(riskified_order)
+      post_request("/api/checkout_denied", riskified_order)
     end
 
-    def cancel(json_body)
-      post_request("/api/cancel", json_body)
+    def cancel(riskified_order)
+      post_request("/api/cancel", riskified_order)
     end
 
-    def refund(json_body)
-      post_request("/api/refund", json_body)
+    def refund(riskified_order)
+      post_request("/api/refund", riskified_order)
     end
 
     private
 
-    def post_request(endpoint, json_formatted_body)
+    def post_request(endpoint, riskified_order)
+      json_formatted_body = riskified_order.to_json
+
       Typhoeus::Request.new(
           (base_url + endpoint),
           method: :post,

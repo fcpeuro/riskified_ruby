@@ -1,6 +1,13 @@
 require "riskified/version"
 require 'riskified/configuration'
 require 'riskified/client'
+require 'riskified/Entities/address'
+require 'riskified/Entities/client_details'
+require 'riskified/Entities/customer'
+require 'riskified/Entities/discount_code'
+require 'riskified/Entities/line_item'
+require 'riskified/Entities/order'
+require 'riskified/Entities/shipping_line'
 
 module Riskified
   class << self
