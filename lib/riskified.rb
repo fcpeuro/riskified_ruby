@@ -8,6 +8,7 @@ require 'riskified/Entities/discount_code'
 require 'riskified/Entities/line_item'
 require 'riskified/Entities/order'
 require 'riskified/Entities/shipping_line'
+require 'riskified/Exceptions/api_connection_error'
 
 module Riskified
   class << self

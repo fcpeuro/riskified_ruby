@@ -49,14 +49,24 @@ module Riskified
     private
 
     def post_request(endpoint, riskified_order)
-      json_formatted_body = riskified_order.to_json
+      json_formatted_body = convert_to_json(riskified_order)
 
-      Typhoeus::Request.new(
-          (base_url + endpoint),
-          method: :post,
-          body: json_formatted_body,
-          headers: headers(json_formatted_body)
-      ).run
+      begin
+        response = Typhoeus::Request.new(
+            (base_url + endpoint),
+            method: :post,
+            body: json_formatted_body,
+            headers: headers(json_formatted_body)
+        ).run
+      rescue StandardError => e
+        raise Riskified::Exceptions::ApiConnectionError.new e.message
+      end
+
+      response
+    end
+
+    def convert_to_json(riskified_order)
+      riskified_order.to_json
     end
 
     def base_url
