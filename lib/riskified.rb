@@ -9,6 +9,9 @@ require 'riskified/Entities/line_item'
 require 'riskified/Entities/order'
 require 'riskified/Entities/shipping_line'
 require 'riskified/Exceptions/api_connection_error'
+require 'riskified/Exceptions/unexpected_order_status'
+require 'riskified/Statuses/approved'
+require 'riskified/Statuses/declined'
 
 module Riskified
   class << self

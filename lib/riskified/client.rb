@@ -10,6 +10,8 @@ module Riskified
     SANDBOX_URL = "https://sandbox.riskified.com".freeze
     LIVE_URL = "https://wh.riskified.com".freeze
 
+    EXPECTED_ORDER_STATUSES = %w(approved declined).freeze
+
     def initialize
       Riskified.validate_configuration
     end
@@ -46,13 +48,18 @@ module Riskified
       post_request("/api/refund", riskified_order)
     end
 
+    def get_response_object
+      @response
+    end
+
     private
 
     def post_request(endpoint, riskified_order)
       json_formatted_body = convert_to_json(riskified_order)
 
       begin
-        response = Typhoeus::Request.new(
+        # make the HTTP request and get the response object
+        @response = Typhoeus::Request.new(
             (base_url + endpoint),
             method: :post,
             body: json_formatted_body,
@@ -62,12 +69,41 @@ module Riskified
         raise Riskified::Exceptions::ApiConnectionError.new e.message
       end
 
-      validate_response response
+      validate_response @response
 
-      response
+      get_order_status @response
+    end
+
+    def get_order_status(response)
+      begin
+        # parse the JSON response and extract the order status
+        order_status = parse_response['order']['status'].downcase
+
+        validate_order_status(order_status)
+
+        build_status_object(order_status)
+      rescue StandardError => e
+        raise Riskified::Exceptions::ApiConnectionError.new e.message
+      end
+    end
+
+
+    def build_status_object(order_status)
+      # initialize status object from the string
+      "#{order_status.capitalize}".constantize.new
+    end
+
+    def parse_response
+      JSON.parse(@response.body)
+    end
+
+    def validate_order_status(order_status)
+      # raise an exception if the the order_status is unexpected
+      raise Riskified::Exceptions::UnexpectedOrderStatus.new "Unexpected Order Status: #{order_status}." if EXPECTED_ORDER_STATUSES.include? order_status === false
     end
 
     def validate_response(response)
+      # raise exception if the response code is different than 200
       raise Riskified::Exceptions::ApiConnectionError.new "Response Failed. Code: #{response.code}. Message: #{response.status_message}." if response.code != 200
     end
 
