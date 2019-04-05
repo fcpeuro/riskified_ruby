@@ -3,6 +3,7 @@ require 'riskified/configuration'
 require 'riskified/client'
 # Exceptions
 require 'riskified/Exceptions/api_connection_error'
+require 'riskified/Exceptions/request_failed'
 require 'riskified/Exceptions/unexpected_order_status'
 # Entities
 require 'riskified/Entities/address'

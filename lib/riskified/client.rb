@@ -118,7 +118,7 @@ module Riskified
 
     def validate_response_code(response)
       # raise exception if the response code is different than 200
-      raise Riskified::Exceptions::ApiConnectionError.new "Response Failed. Code: #{response.code}. Message: #{response.status_message}." if response.code != 200
+      raise Riskified::Exceptions::RequestFailed.new "Request Failed. Code: #{response.code}. Message: #{response.status_message}." if response.code != 200
     end
 
     def convert_to_json(riskified_order)
