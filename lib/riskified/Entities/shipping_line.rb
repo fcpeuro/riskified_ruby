@@ -4,7 +4,7 @@ module Riskified
   module Entities
 
     ## Reference: https://apiref.riskified.com/curl/#models-shipping-line
-    ShippingLine = KeywordStruct.new(
+    ShippingLine = Riskified::Entities::KeywordStruct.new(
 
         #### Required #####
 

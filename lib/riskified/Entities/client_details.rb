@@ -4,7 +4,7 @@ module Riskified
   module Entities
 
     ## Reference: https://apiref.riskified.com/curl/#models-client-details
-    ClientDetails = KeywordStruct.new(
+    ClientDetails = Riskified::Entities::KeywordStruct.new(
 
         #### Optional #####
 

@@ -4,7 +4,7 @@ module Riskified
   module Entities
 
     ## Reference: https://apiref.riskified.com/curl/#models-address
-    Address = KeywordStruct.new(
+    Address = Riskified::Entities::KeywordStruct.new(
 
         ##### Required #####
 

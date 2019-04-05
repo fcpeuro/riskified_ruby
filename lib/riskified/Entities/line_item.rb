@@ -4,7 +4,7 @@ module Riskified
   module Entities
 
     ## Reference: https://apiref.riskified.com/curl/#models-line-item
-    LineItem = KeywordStruct.new(# todo: ask: do we need to make   Digital LineItem or the General LineItem is enough?
+    LineItem = Riskified::Entities::KeywordStruct.new(
 
         ##### Required #####
 

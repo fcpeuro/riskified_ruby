@@ -4,7 +4,7 @@ module Riskified
   module Entities
 
     ## Reference: https://apiref.riskified.com/curl/#models-order
-    Order = KeywordStruct.new(
+    Order = Riskified::Entities::KeywordStruct.new(
 
         ##### Required #####
 

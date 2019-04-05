@@ -4,7 +4,7 @@ module Riskified
   module Entities
 
     ## Reference: https://apiref.riskified.com/curl/#models-discount-code
-    DiscountCode = KeywordStruct.new(
+    DiscountCode = Riskified::Entities::KeywordStruct.new(
 
         #### Required #####
 
