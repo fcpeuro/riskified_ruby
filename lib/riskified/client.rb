@@ -16,40 +16,52 @@ module Riskified
       Riskified.validate_configuration
     end
 
+    # @param [Riskified::Entities::Order
+    # @return [Approved | Declined]
     def decide(riskified_order)
       post_request("/api/decide", riskified_order)
     end
 
+    # @param [Riskified::Entities::Order
+    # @return [Approved | Declined]
     def submit(riskified_order)
       post_request("/api/submit", riskified_order)
     end
 
+    # @param [Riskified::Entities::Order
+    # @return [Approved | Declined]
     def checkout_create(riskified_order)
       post_request("/api/checkout_create", riskified_order)
     end
 
+    # @param [Riskified::Entities::Order
+    # @return [Approved | Declined]
     def create(riskified_order)
       post_request("/api/create", riskified_order)
     end
 
+    # @param [Riskified::Entities::Order
+    # @return [Approved | Declined]
     def update(riskified_order)
       post_request("/api/update", riskified_order)
     end
 
+    # @param [Riskified::Entities::Order
+    # @return [Approved | Declined]
     def checkout_denied(riskified_order)
       post_request("/api/checkout_denied", riskified_order)
     end
 
+    # @param [Riskified::Entities::Order
+    # @return [Approved | Declined]
     def cancel(riskified_order)
       post_request("/api/cancel", riskified_order)
     end
 
+    # @param [Riskified::Entities::Order
+    # @return [Approved | Declined]
     def refund(riskified_order)
       post_request("/api/refund", riskified_order)
-    end
-
-    def get_response_object
-      @response
     end
 
     private
@@ -59,7 +71,7 @@ module Riskified
 
       begin
         # make the HTTP request and get the response object
-        @response = Typhoeus::Request.new(
+        response = Typhoeus::Request.new(
             (base_url + endpoint),
             method: :post,
             body: json_formatted_body,
@@ -69,15 +81,17 @@ module Riskified
         raise Riskified::Exceptions::ApiConnectionError.new e.message
       end
 
-      validate_response @response
+      validate_response_code response
 
-      get_order_status @response
+      extract_order_status response
     end
 
-    def get_order_status(response)
+    def extract_order_status(response)
       begin
-        # parse the JSON response and extract the order status
-        order_status = parse_response['order']['status'].downcase
+        parsed_response = parse_json_response(response)
+
+        # extract the order status from the parsed response
+        order_status = parsed_response['order']['status'].downcase
 
         validate_order_status(order_status)
 
@@ -93,8 +107,8 @@ module Riskified
       "#{order_status.capitalize}".constantize.new
     end
 
-    def parse_response
-      JSON.parse(@response.body)
+    def parse_json_response(response)
+      JSON.parse(response.body)
     end
 
     def validate_order_status(order_status)
@@ -102,7 +116,7 @@ module Riskified
       raise Riskified::Exceptions::UnexpectedOrderStatus.new "Unexpected Order Status: #{order_status}." if EXPECTED_ORDER_STATUSES.include? order_status === false
     end
 
-    def validate_response(response)
+    def validate_response_code(response)
       # raise exception if the response code is different than 200
       raise Riskified::Exceptions::ApiConnectionError.new "Response Failed. Code: #{response.code}. Message: #{response.status_message}." if response.code != 200
     end
