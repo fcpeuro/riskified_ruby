@@ -8,8 +8,8 @@ module Riskified
   class Client
 
     SANDBOX_URL = "https://sandbox.riskified.com".freeze
-    LIVE_URL = "https://wh.riskified.com".freeze
-
+    ASYNC_LIVE_URL = "https://wh.riskified.com".freeze
+    SYNC_LIVE_URL = "https://wh-sync.riskified.com".freeze
     EXPECTED_ORDER_STATUSES = %w(approved declined).freeze
 
     def initialize
@@ -126,7 +126,8 @@ module Riskified
     end
 
     def base_url
-      Riskified.config.sandbox_mode === true ? SANDBOX_URL : LIVE_URL
+      live_url = Riskified.config.sync_mode === true ? SYNC_LIVE_URL : ASYNC_LIVE_URL
+      Riskified.config.sandbox_mode === true ? SANDBOX_URL : live_url
     end
 
     def headers(body)

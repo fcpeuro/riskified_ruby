@@ -2,6 +2,8 @@
 
 Ruby client for the [Riskified API](https://apiref.riskified.com) using [Faraday](https://github.com/technoweenie/faraday).  Ruby > 2.0 is required.
 
+This Ruby client currently only supports the Sync flow.
+
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -49,5 +51,6 @@ Riskified.config.sandbox_mode
 
 ```ruby
 client = Riskified::Client.new
-client.checkout_create(json_order)
+order = Riskified::Entities::Order.new
+client.decide(order)
 ```

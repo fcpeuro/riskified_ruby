@@ -1,8 +1,9 @@
 module Riskified
   class Configuration
-    attr_accessor :sandbox_mode, :auth_token, :default_referrer, :shop_domain
+    attr_accessor :sandbox_mode, :sync_mode, :auth_token, :default_referrer, :shop_domain
 
     def initialize
+      @sync_mode = true # set by default.
       @sandbox_mode = nil
       @auth_token = nil
       @default_referrer = nil
