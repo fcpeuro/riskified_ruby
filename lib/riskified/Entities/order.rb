@@ -45,6 +45,8 @@ module Riskified
     ) do
 
       def convert_to_json
+        # NOTE: this method doesn't include the optional "Objects" since they don't exist yet
+
         order = self.to_h
 
         order[:customer] = order[:customer].to_h
@@ -53,15 +55,15 @@ module Riskified
         order[:shipping_address] = order[:shipping_address].to_h
 
         line_items = Array.new
-        order[:line_items].each {|i| line_items.push i.to_h}
+        order[:line_items]&.each {|i| line_items.push i.to_h}
         order[:line_items] = line_items
 
         discount_codes = Array.new
-        order[:discount_codes].each {|i| discount_codes.push i.to_h}
+        order[:discount_codes]&.each {|i| discount_codes.push i.to_h}
         order[:discount_codes] = discount_codes
 
         shipping_lines = Array.new
-        order[:shipping_lines].each {|i| shipping_lines.push i.to_h}
+        order[:shipping_lines]&.each {|i| shipping_lines.push i.to_h}
         order[:shipping_lines] = shipping_lines
 
         {order: order}.to_json
