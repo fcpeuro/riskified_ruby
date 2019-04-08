@@ -1,7 +1,6 @@
 require "typhoeus"
 require "openssl"
 require 'json'
-
 require 'riskified/configuration'
 
 module Riskified
@@ -67,7 +66,8 @@ module Riskified
     private
 
     def post_request(endpoint, riskified_order)
-      json_formatted_body = convert_to_json(riskified_order)
+      json_formatted_body = riskified_order.convert_to_json
+      hmac = calculate_hmac_sha256(json_formatted_body)
 
       begin
         # make the HTTP request and get the response object
@@ -75,7 +75,7 @@ module Riskified
             (base_url + endpoint),
             method: :post,
             body: json_formatted_body,
-            headers: headers(json_formatted_body)
+            headers: headers(hmac)
         ).run
       rescue StandardError => e
         raise Riskified::Exceptions::ApiConnectionError.new e.message
@@ -121,21 +121,17 @@ module Riskified
       raise Riskified::Exceptions::RequestFailed.new "Request Failed. Code: #{response.code}. Message: #{response.status_message}." if response.code != 200
     end
 
-    def convert_to_json(riskified_order)
-      riskified_order.to_json
-    end
-
     def base_url
       live_url = Riskified.config.sync_mode === true ? SYNC_LIVE_URL : ASYNC_LIVE_URL
       Riskified.config.sandbox_mode === true ? SANDBOX_URL : live_url
     end
 
-    def headers(body)
+    def headers(hmac)
       {
-          "Content-Type": "application/json",
-          "ACCEPT": "application/vnd.riskified.com; version=2",
-          "X-RISKIFIED-SHOP-DOMAIN": Riskified.config.shop_domain,
-          "X-RISKIFIED-HMAC-SHA256": calculate_hmac_sha256(body)
+          "Content-Type":"application/json",
+          "ACCEPT":"application/vnd.riskified.com; version=2",
+          "X-RISKIFIED-SHOP-DOMAIN":Riskified.config.shop_domain,
+          "X-RISKIFIED-HMAC-SHA256":hmac
       }
     end
 

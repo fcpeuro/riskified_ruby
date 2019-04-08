@@ -44,8 +44,28 @@ module Riskified
         :submission_reason, # (failed_verification, rule_decision, third_party, manual_decision, policy_decision)
     ) do
 
-      def to_json
-        {order: self}.to_json
+      def convert_to_json
+        order = self.to_h
+
+        order[:customer] = order[:customer].to_h
+        order[:client_details] = order[:client_details].to_h
+        order[:billing_address] = order[:billing_address].to_h
+        order[:shipping_address] = order[:shipping_address].to_h
+
+        line_items = Array.new
+        order[:line_items].each {|i| line_items.push i.to_h}
+        order[:line_items] = line_items
+
+        discount_codes = Array.new
+        order[:discount_codes].each {|i| discount_codes.push i.to_h}
+        order[:discount_codes] = discount_codes
+
+        shipping_lines = Array.new
+        order[:shipping_lines].each {|i| shipping_lines.push i.to_h}
+        order[:shipping_lines] = shipping_lines
+
+        {order: order}.to_json
+
       end
 
     end
