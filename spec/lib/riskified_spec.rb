@@ -5,13 +5,22 @@ require 'byebug'
 module Riskified
   describe 'Riskified Client' do
 
-    before(:all) do
+    def configure_riskified
       Riskified.configure do |config|
         config.auth_token = ENV["RISKIFIED_AUTH_TOKEN"]
         config.default_referrer = ENV["RISKIFIED_DEFAULT_REFERRER"]
         config.shop_domain = ENV["RISKIFIED_SHOP_DOMAIN"]
         config.sandbox_mode = true
       end
+    end
+
+    def mock_decide_response(response_body)
+      response = Typhoeus::Response.new(code: 200, body: response_body)
+      Typhoeus.stub('https://sandbox.riskified.com/api/decide').and_return(response)
+    end
+
+    before(:all) do
+      configure_riskified
 
       @client = Riskified::Client.new
     end
@@ -95,60 +104,24 @@ module Riskified
 
       context 'Sync flow' do
 
-        it "Submits decide" do
+        context 'Declined response' do
 
-          order = build_order 'TEST-B-1','test@approve.com'
+          it "Submits decide" do
+            order_id = 'TEST-B-2'
 
-          response = @client.decide(order)
+            declined_response_body = "{\"order\":{\"id\":\"#{order_id}\",\"status\":\"declined\",\"description\":\"Reviewed and declined by Riskified\"}}"
 
+            mock_decide_response declined_response_body
 
-          x = response
+            order = build_order order_id, 'test@decline.com'
 
-          # expect(response["order"]).not_to be_falsey
+            response_object = @client.decide(order)
+
+            expect(response_object.to_string).to eq "declined"
+          end
+
         end
-
-        # todo: to continue updating the tests
-
-        # it "Submits checkout create" do
-        #   response = JSON.parse(@client.checkout_create(checkout.to_json).body)
-        #   expect(response["checkout"]).not_to be_falsey
-        # end
-        #
-        # it "Submits checkout denied" do
-        #   response = JSON.parse(@client.checkout_denied(checkout.to_json).body)
-        #   expect(response["checkout"]).not_to be_falsey
-        # end
       end
-
-      # context 'Async flow', :skip => "Async flow is disabled." do
-      #
-      #   it "Submits submit" do
-      #     response = JSON.parse(@client.submit(order.to_json).body)
-      #     expect(response["order"]).not_to be_falsey
-      #   end
-      #
-      #   it "Submits create" do
-      #     response = JSON.parse(@client.create(order.to_json).body)
-      #     expect(response["order"]).not_to be_falsey
-      #   end
-      #
-      #   it "Submits update" do
-      #     response = JSON.parse(@client.update(order.to_json).body)
-      #     expect(response["order"]).not_to be_falsey
-      #   end
-      #
-      #   it "Submits refund" do
-      #     @client.create(order.to_json)
-      #     response = JSON.parse(@client.refund(refund.to_json).body)
-      #     expect(response["order"]).not_to be_falsey
-      #   end
-      #
-      #   it "Submits cancellation" do
-      #     @client.create(order.to_json)
-      #     response = JSON.parse(@client.cancel(cancelled_order.to_json).body)
-      #     expect(response["order"]).not_to be_falsey
-      #   end
-      # end
     end
   end
 end
