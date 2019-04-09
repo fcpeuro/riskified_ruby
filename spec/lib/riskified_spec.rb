@@ -111,6 +111,7 @@ module Riskified
 
             declined_response_body = "{\"order\":{\"id\":\"#{order_id}\",\"status\":\"declined\",\"description\":\"Reviewed and declined by Riskified\"}}"
 
+            # must mock the response to avoid sending http requests
             mock_decide_response declined_response_body
 
             order = build_order order_id, 'test@decline.com'
@@ -118,6 +119,25 @@ module Riskified
             response_object = @client.decide(order)
 
             expect(response_object.to_string).to eq "declined"
+          end
+
+        end
+
+        context 'Approved response' do
+
+          it "Submits decide" do
+            order_id = 'TEST-B-2'
+
+            declined_response_body = "{\"order\":{\"id\":\"#{order_id}\",\"status\":\"approved\",\"description\":\"Reviewed and approved by Riskified\"}}"
+
+            # must mock the response to avoid sending http requests
+            mock_decide_response declined_response_body
+
+            order = build_order order_id, 'test@decline.com'
+
+            response_object = @client.decide(order)
+
+            expect(response_object.to_string).to eq "approved"
           end
 
         end
