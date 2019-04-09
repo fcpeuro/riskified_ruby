@@ -122,7 +122,7 @@ module Riskified
 
         context 'when order is not fraud' do
           let(:mocked_response_body) {"{\"order\":{\"id\":\"#{order_id}\",\"status\":\"approved\",\"description\":\"Reviewed and approved by Riskified\"}}"}
-          let(:order) {build_order order_id, 'test@approved.com'}
+          let(:order) {build_order order_id, 'test@approve.com'}
           it "gets approved response" do
             response_object = @client.decide(order)
 
