@@ -104,7 +104,7 @@ module Riskified
 
     def build_status_object(order_status)
       # initialize status object from the string
-      "Riskified::Statuses::#{order_status.capitalize}".constantize.new
+      Object.const_get("Riskified::Statuses::#{order_status.capitalize}").new
     end
 
     def parse_json_response(response)
