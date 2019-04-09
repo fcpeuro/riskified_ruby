@@ -14,11 +14,6 @@ module Riskified
       end
     end
 
-    def mock_decide_response(response_body)
-      response = Typhoeus::Response.new(code: 200, body: response_body)
-      Typhoeus.stub('https://sandbox.riskified.com/api/decide').and_return(response)
-    end
-
     before(:all) do
       configure_riskified
 
@@ -27,7 +22,7 @@ module Riskified
 
     def build_order(order_id, email)
       Riskified::Entities::Order.new(
-          id: 'CG-' + order_id + ((SecureRandom.random_number(9e5) + 1e8).to_i).to_s, # todo: remove the random number
+          id: order_id,
           email: email,
           created_at: Time.now,
           currency: 'USD',
@@ -100,47 +95,41 @@ module Riskified
       )
     end
 
-    context 'Submissions' do
+    context 'when calling Decide' do
 
-      context 'Sync flow' do
+      def mock_decide_response(mocked_response_body)
+        response = Typhoeus::Response.new(code: 200, body: mocked_response_body)
+        Typhoeus.stub('https://sandbox.riskified.com/api/decide').and_return(response)
+      end
 
-        context 'Declined response' do
+      let(:order_id) do
+        'CG-Test-CCC-' + ((SecureRandom.random_number(9e5) + 1e8).to_i).to_s
+      end
 
-          it "Submits decide" do
-            order_id = 'TEST-B-2'
+      context 'with sync flow' do
+        # must mock the response to avoid sending http requests
+        before(:each) {mock_decide_response mocked_response_body}
 
-            declined_response_body = "{\"order\":{\"id\":\"#{order_id}\",\"status\":\"declined\",\"description\":\"Reviewed and declined by Riskified\"}}"
-
-            # must mock the response to avoid sending http requests
-            mock_decide_response declined_response_body
-
-            order = build_order order_id, 'test@decline.com'
-
+        context 'when order is fraud' do
+          let(:mocked_response_body) {"{\"order\":{\"id\":\"#{order_id}\",\"status\":\"declined\",\"description\":\"Orderexhibitsstrongfraudulentindicators\",\"category\":\"Fraudulent\"}}"}
+          let(:order) {build_order order_id, 'test@decline.com'}
+          it "gets declined response" do
             response_object = @client.decide(order)
 
             expect(response_object.to_string).to eq "declined"
           end
-
         end
 
-        context 'Approved response' do
-
-          it "Submits decide" do
-            order_id = 'TEST-B-2'
-
-            declined_response_body = "{\"order\":{\"id\":\"#{order_id}\",\"status\":\"approved\",\"description\":\"Reviewed and approved by Riskified\"}}"
-
-            # must mock the response to avoid sending http requests
-            mock_decide_response declined_response_body
-
-            order = build_order order_id, 'test@decline.com'
-
+        context 'when order is not fraud' do
+          let(:mocked_response_body) {"{\"order\":{\"id\":\"#{order_id}\",\"status\":\"approved\",\"description\":\"Reviewed and approved by Riskified\"}}"}
+          let(:order) {build_order order_id, 'test@approved.com'}
+          it "gets approved response" do
             response_object = @client.decide(order)
 
             expect(response_object.to_string).to eq "approved"
           end
-
         end
+
       end
     end
   end
