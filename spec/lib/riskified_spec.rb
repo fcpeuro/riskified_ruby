@@ -97,8 +97,8 @@ module Riskified
 
     context 'when calling Decide' do
 
-      def mock_decide_response(mocked_response_body)
-        response = Typhoeus::Response.new(code: 200, body: mocked_response_body)
+      def mock_decide_response(mocked_response_body, code = 200)
+        response = Typhoeus::Response.new(code: code, body: mocked_response_body)
         Typhoeus.stub('https://sandbox.riskified.com/api/decide').and_return(response)
       end
 
@@ -108,10 +108,29 @@ module Riskified
 
       context 'with sync flow' do
         # must mock the response to avoid sending http requests
-        before(:each) {mock_decide_response mocked_response_body}
+        before(:each) {mock_decide_response mocked_response_body, mocked_response_code}
+
+        context 'when missing order id' do
+          let(:mocked_response_body) {'{"error":{"message":"JSON malformed - no id key for order"}}'}
+          let(:mocked_response_code) {400}
+          let(:order) {build_order nil, 'will-not-reach-the-server@anyway.com'}
+          it "it gets no order root key" do
+            expect {@client.decide(order)}.to raise_error(Riskified::Exceptions::RequestFailed)
+          end
+        end
+
+        context 'when missing order root key' do
+          let(:mocked_response_body) {'{"error":{"message":"JSON malformed - no order root key"}}'}
+          let(:mocked_response_code) {400}
+          let(:order) {build_order order_id, 'will-not-reach-the-server@anyway.com'}
+          it "it gets no order root key" do
+            expect {@client.decide(order)}.to raise_error(Riskified::Exceptions::RequestFailed)
+          end
+        end
 
         context 'when order is fraud' do
           let(:mocked_response_body) {"{\"order\":{\"id\":\"#{order_id}\",\"status\":\"declined\",\"description\":\"Orderexhibitsstrongfraudulentindicators\",\"category\":\"Fraudulent\"}}"}
+          let(:mocked_response_code) {200}
           let(:order) {build_order order_id, 'test@decline.com'}
           it "gets declined response" do
             response_object = @client.decide(order)
@@ -122,6 +141,7 @@ module Riskified
 
         context 'when order is not fraud' do
           let(:mocked_response_body) {"{\"order\":{\"id\":\"#{order_id}\",\"status\":\"approved\",\"description\":\"Reviewed and approved by Riskified\"}}"}
+          let(:mocked_response_code) {200}
           let(:order) {build_order order_id, 'test@approve.com'}
           it "gets approved response" do
             response_object = @client.decide(order)
