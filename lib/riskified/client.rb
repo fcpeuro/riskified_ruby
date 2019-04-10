@@ -16,25 +16,27 @@ module Riskified
     end
 
     # Call the '/decide' endpoint.
-    # @param [Riskified::Entities::Order
+    # @param riskified_order [Riskified::Entities::Order] Order information.
+    # @param shop_domain [string | nil] the full domain name of shop that was registered.
     # @return [Approved | Declined]
-    def decide(riskified_order)
-      post_request("/api/decide", riskified_order)
+    def decide(riskified_order, shop_domain = nil)
+      post_request("/api/decide", riskified_order, shop_domain)
     end
 
     private
 
     # Make an HTTP post request to the Riskified API.
-    def post_request(endpoint, riskified_order)
+    def post_request(endpoint, riskified_order, shop_domain)
       json_formatted_body = riskified_order.convert_to_json
       hmac = calculate_hmac_sha256(json_formatted_body)
+      shop_domain = shop_domain(shop_domain)
 
       begin
         response = Typhoeus::Request.new(
             (base_url + endpoint),
             method: :post,
             body: json_formatted_body,
-            headers: headers(hmac)
+            headers: headers(hmac, shop_domain)
         ).run
       rescue StandardError => e
         raise Riskified::Exceptions::ApiConnectionError.new(e.message)
@@ -91,11 +93,11 @@ module Riskified
     end
 
     # Return POST request headers. 
-    def headers(hmac)
+    def headers(hmac, shop_domain)
       {
           "Content-Type":"application/json",
           "ACCEPT":"application/vnd.riskified.com; version=2",
-          "X-RISKIFIED-SHOP-DOMAIN":Riskified.config.shop_domain,
+          "X-RISKIFIED-SHOP-DOMAIN":shop_domain,
           "X-RISKIFIED-HMAC-SHA256":hmac
       }
     end
@@ -103,6 +105,11 @@ module Riskified
     # Generate HMAC string from the request body using SHA256.
     def calculate_hmac_sha256(body)
       OpenSSL::HMAC.hexdigest('SHA256', Riskified.config.auth_token, body)
+    end
+
+    # Return default shop domain if not provided as parameter.
+    def shop_domain(shop_domain)
+      shop_domain.nil? ? Riskified.config.default_shop_domain : shop_domain
     end
 
   end

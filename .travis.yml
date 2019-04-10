@@ -8,7 +8,6 @@ jobs:
         - bundler
       rvm: 2.4.4
       env:
-        - RISKIFIED_SHOP_DOMAIN=www.recharge.com
         - RISKIFIED_DEFAULT_REFERRER=www.cg.nl
       script:
         - bundle exec rspec

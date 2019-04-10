@@ -9,7 +9,7 @@ module Riskified
       Riskified.configure do |config|
         config.auth_token = ENV["RISKIFIED_AUTH_TOKEN"]
         config.default_referrer = ENV["RISKIFIED_DEFAULT_REFERRER"]
-        config.shop_domain = ENV["RISKIFIED_SHOP_DOMAIN"]
+        config.default_shop_domain = ENV["RISKIFIED_DEFAULT_SHOP_DOMAIN"]
         config.sandbox_mode = true
       end
     end
@@ -102,6 +102,7 @@ module Riskified
         Typhoeus.stub('https://sandbox.riskified.com/api/decide').and_return(response)
       end
 
+      let(:shop_domain) { 'www.cg.test' }
       let(:order_id) do
         'CG-Test-CCC-' + ((SecureRandom.random_number(9e5) + 1e8).to_i).to_s
       end
@@ -115,7 +116,7 @@ module Riskified
           let(:mocked_response_code) {400}
           let(:order) {build_order nil, 'will-not-reach-the-server@anyway.com'}
           it "it gets no order root key" do
-            expect {@client.decide(order)}.to raise_error(Riskified::Exceptions::RequestFailed)
+            expect {@client.decide(order, shop_domain)}.to raise_error(Riskified::Exceptions::RequestFailed)
           end
         end
 
@@ -124,7 +125,7 @@ module Riskified
           let(:mocked_response_code) {400}
           let(:order) {build_order order_id, 'will-not-reach-the-server@anyway.com'}
           it "it gets no order root key" do
-            expect {@client.decide(order)}.to raise_error(Riskified::Exceptions::RequestFailed)
+            expect {@client.decide(order, shop_domain)}.to raise_error(Riskified::Exceptions::RequestFailed)
           end
         end
 
@@ -133,7 +134,7 @@ module Riskified
           let(:mocked_response_code) {200}
           let(:order) {build_order order_id, 'test@decline.com'}
           it "gets declined response" do
-            response_object = @client.decide(order)
+            response_object = @client.decide(order, shop_domain)
 
             expect(response_object.to_string).to eq "declined"
           end
@@ -144,7 +145,7 @@ module Riskified
           let(:mocked_response_code) {200}
           let(:order) {build_order order_id, 'test@approve.com'}
           it "gets approved response" do
-            response_object = @client.decide(order)
+            response_object = @client.decide(order, shop_domain)
 
             expect(response_object.to_string).to eq "approved"
           end
