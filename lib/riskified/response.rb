@@ -5,7 +5,8 @@ module Riskified
     EXPECTED_ORDER_STATUSES = %w(approved declined).freeze
 
     def initialize(response)
-      #todo: maybe check the type is
+      validate_response_type(response)
+
       @response = response
       parse_json
     end
@@ -47,6 +48,10 @@ module Riskified
     # Raise an exception if the the 'order_status' is unexpected.
     def validate_order_status(order_status)
       raise Riskified::Exceptions::UnexpectedOrderStatus.new "Unexpected Order Status: #{order_status}." if EXPECTED_ORDER_STATUSES.include? order_status === false
+    end
+
+    def validate_response_type(response)
+      raise ArgumentError('Invalid Response Type.') unless response.is_a?(Typhoeus::Response)
     end
 
   end
