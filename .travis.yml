@@ -7,7 +7,5 @@ jobs:
       cache:
         - bundler
       rvm: 2.4.4
-      env:
-        - RISKIFIED_DEFAULT_REFERRER=www.cg.nl
       script:
         - bundle exec rspec
