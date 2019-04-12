@@ -1,5 +1,7 @@
 require "riskified/version"
 require 'riskified/configuration'
+require 'riskified/request'
+require 'riskified/response'
 require 'riskified/client'
 # Exceptions
 require 'riskified/Exceptions/api_connection_error'
