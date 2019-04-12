@@ -3,7 +3,9 @@ require 'riskified/configuration'
 require 'riskified/client'
 # Exceptions
 require 'riskified/Exceptions/api_connection_error'
+require 'riskified/Exceptions/configuration_error'
 require 'riskified/Exceptions/request_failed'
+require 'riskified/Exceptions/response_parsing_failed'
 require 'riskified/Exceptions/unexpected_order_status'
 # Entities
 require 'riskified/Entities/keyword_struct'
@@ -29,7 +31,7 @@ module Riskified
   end
 
   def self.validate_configuration
-    raise ConfigurationError.new('Connector not configured.') if @configuration.nil?
+    raise Riskified::Exceptions::ConfigurationError.new('Connector not configured.') if @configuration.nil?
 
     @configuration.validate
   end
