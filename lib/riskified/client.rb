@@ -11,25 +11,21 @@ module Riskified
     SYNC_LIVE_URL = "https://wh-sync.riskified.com".freeze
     EXPECTED_ORDER_STATUSES = %w(approved declined).freeze
 
-    def initialize
-      Riskified.validate_configuration
-    end
 
     # Call the '/decide' endpoint.
     # @param riskified_order [Riskified::Entities::Order] Order information.
-    # @param shop_domain [string | nil] the full domain name of shop that was registered.
     # @return [Approved | Declined]
-    def decide(riskified_order, shop_domain = nil)
-      post_request("/api/decide", riskified_order, shop_domain)
+    def decide(riskified_order)
+      post_request("/api/decide", riskified_order)
     end
 
     private
 
     # Make an HTTP post request to the Riskified API.
-    def post_request(endpoint, riskified_order, shop_domain)
+    def post_request(endpoint, riskified_order)
+      Riskified.validate_configuration
       json_formatted_body = riskified_order.convert_to_json
       hmac = calculate_hmac_sha256(json_formatted_body)
-      shop_domain = shop_domain(shop_domain)
 
       begin
         response = Typhoeus::Request.new(
@@ -107,9 +103,9 @@ module Riskified
       OpenSSL::HMAC.hexdigest('SHA256', Riskified.config.auth_token, body)
     end
 
-    # Return default shop domain if not provided as parameter.
-    def shop_domain(shop_domain)
-      shop_domain.nil? ? Riskified.config.default_shop_domain : shop_domain
+    # Return the configured shop domain
+    def shop_domain
+      Riskified.config.shop_domain
     end
 
   end
