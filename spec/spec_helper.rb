@@ -1,9 +1,6 @@
 ENV["RAILS_ENV"] ||= 'test'
 
-require 'dotenv'
 require './lib/riskified'
-
-Dotenv.load
 
 RSpec.configure do |config|
   config.color = true
