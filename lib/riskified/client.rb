@@ -1,6 +1,5 @@
 require "typhoeus"
 require "openssl"
-require 'json'
 require 'riskified/configuration'
 
 module Riskified
@@ -9,8 +8,6 @@ module Riskified
     SANDBOX_URL = "https://sandbox.riskified.com".freeze
     ASYNC_LIVE_URL = "https://wh.riskified.com".freeze
     SYNC_LIVE_URL = "https://wh-sync.riskified.com".freeze
-    EXPECTED_ORDER_STATUSES = %w(approved declined).freeze
-
 
     # Call the '/decide' endpoint.
     # @param riskified_order [Riskified::Entities::Order] Order information.
@@ -38,48 +35,8 @@ module Riskified
         raise Riskified::Exceptions::ApiConnectionError.new(e.message)
       end
 
-      validate_response_code(response.code, response.status_message)
-
-      parsed_response = parse_json_response(response.body)
-
-      extract_order_status(parsed_response)
-    end
-
-    # Read the status string from the parsed response and convert it to status object (the risk decision). 
-    def extract_order_status(parsed_response)
-      begin
-        order_status = parsed_response['order']['status'].downcase
-
-        validate_order_status(order_status)
-
-        build_status_object(order_status)
-      rescue StandardError => e
-        raise Riskified::Exceptions::UnexpectedOrderStatus.new("Unable to extract order status from response: #{e.message}")
-      end
-    end
-
-    # Initialize status object from the 'order_status' string.
-    def build_status_object(order_status)
-      Object.const_get("Riskified::Statuses::#{order_status.capitalize}").new
-    end
-
-    # Parse the JSON response body.
-    def parse_json_response(response_body)
-      begin
-        JSON.parse(response_body)
-      rescue StandardError => e
-        raise Riskified::Exceptions::ResponseParsingFailed.new("Unable to to parse JSON response: #{e.message}")
-      end
-    end
-
-    # Raise an exception if the the 'order_status' is unexpected.
-    def validate_order_status(order_status)
-      raise Riskified::Exceptions::UnexpectedOrderStatus.new "Unexpected Order Status: #{order_status}." if EXPECTED_ORDER_STATUSES.include? order_status === false
-    end
-
-    # Raise an exception if the 'response_code' code is different than 200.
-    def validate_response_code(response_code, response_status_message)
-      raise Riskified::Exceptions::RequestFailed.new "Request Failed. Code: #{response_code}. Message: #{response_status_message}." if response_code != 200
+      # returns the Order Status Object
+      Riskified::Response.new(response).extract_order_status
     end
 
     # Build the post request base URL.
