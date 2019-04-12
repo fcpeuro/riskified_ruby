@@ -2,6 +2,7 @@ require 'json'
 
 module Riskified
   class Response
+
     EXPECTED_ORDER_STATUSES = %w(approved declined).freeze
 
     def initialize(response)

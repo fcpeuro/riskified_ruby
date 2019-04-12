@@ -1,5 +1,3 @@
-require "typhoeus"
-require "openssl"
 require 'riskified/configuration'
 
 module Riskified

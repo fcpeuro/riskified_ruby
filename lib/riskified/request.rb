@@ -1,3 +1,6 @@
+require "typhoeus"
+require "openssl"
+
 module Riskified
   class Request
 
@@ -33,7 +36,7 @@ module Riskified
           "Content-Type":"application/json",
           "ACCEPT":"application/vnd.riskified.com; version=2",
           "X-RISKIFIED-SHOP-DOMAIN":shop_domain,
-          "X-RISKIFIED-HMAC-SHA256":calculate_hmac_sha256
+          "X-RISKIFIED-HMAC-SHA256":calculate_hmac_sha256,
       }
     end
 
