@@ -29,6 +29,8 @@ module Riskified
   end
 
   def self.validate_configuration
+    raise ConfigurationError.new('Connector not configured.') if @configuration.nil?
+
     @configuration.validate
   end
 
