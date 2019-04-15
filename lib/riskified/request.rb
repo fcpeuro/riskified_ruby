@@ -15,17 +15,19 @@ module Riskified
 
     def send
       begin
-        response = Typhoeus::Request.new(
+        request = Typhoeus::Request.new(
             endpoint,
             method: :post,
             body: @json_body,
             headers: prepare_headers
-        ).run
+        )
+
+        response = request.run
       rescue StandardError => e
         raise Riskified::Exceptions::ApiConnectionError.new(e.message)
       end
 
-      Riskified::Response.new(response)
+      Riskified::Response.new(response, @json_body)
     end
 
     private
