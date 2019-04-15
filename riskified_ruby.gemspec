@@ -36,4 +36,5 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "typhoeus", "~> 1.3.1"
   spec.add_dependency "rspec", "~> 3.7.0"
+  spec.add_dependency "factory_bot", "~> 5.0.2"
 end
