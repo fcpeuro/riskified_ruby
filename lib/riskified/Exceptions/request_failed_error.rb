@@ -3,7 +3,7 @@
 module Riskified
   module Exceptions
 
-    class ResponseParsingFailed < StandardError
+    class RequestFailedError < StandardError
     end
 
   end

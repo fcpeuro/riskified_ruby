@@ -7,7 +7,7 @@ module Riskified
 
     def configure_riskified
       Riskified.configure do |config|
-        config.auth_token = '<SHOP_AUTH_TOKEN_GOES_HERE>' # Note: make sure you never commit your token.
+        config.auth_token = '<<<< SHOP_AUTH_TOKEN_GOES_HERE >>>>' # Note: make sure you never commit your token.
         config.default_referrer = 'www.google.com'
         config.shop_domain = 'www.recharge.com'
         config.sandbox_mode = true
@@ -138,7 +138,7 @@ module Riskified
           let(:mocked_response_code) {400}
           let(:order) {build_order(nil, 'will-not-reach-the-server@anyway.com')}
           it "it raises RequestFailed exception" do
-            expect {@client.decide(order)}.to(raise_error(Riskified::Exceptions::RequestFailed))
+            expect {@client.decide(order)}.to(raise_error(Riskified::Exceptions::RequestFailedError))
           end
         end
 
@@ -150,7 +150,7 @@ module Riskified
             # remove the order root key from the json object
             allow(order).to(receive(:convert_to_json)).and_return('{"id":"CG-Test-error","email":"will-not-reach-the-server@anyway.com","created_at":"2019-04-10 17:53:38 +0200","currency":"USD","gateway":"authorize_net","browser_ip":"111.111.111.111","total_price":26.49,"total_discounts":0.0,"referring_site":"cg.nl","customer":{"email":"will-not-reach-the-server@anyway.com","verified_email":true,"first_name":"Jone","last_name":"Doe","id":"C123","created_at":"2019-04-10 17:53:38 +0200","social":null,"verified_email_at":null,"first_purchase_at":null,"orders_count":null,"account_type":null,"phone":null,"verified_phone":null,"verified_phone_at":null,"date_of_birth":null,"user_name":null,"phone_mandatory":null,"referrer_customer_id":null,"social_signup_type":null,"gender":null},"client_details":{"accept_language":"en-CA","user_agent":"Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)"},"billing_address":{"first_name":"Jone","last_name":"Doe","address1":"Chestnut Street 92","country":"United States","city":"Louisville","zip":"40202","phone":"555-625-1199","address2":null,"company":null,"province":null,"province_code":null,"country_code":null,"additional_phone":null},"shipping_address":{"first_name":"Jone","last_name":"Doe","address1":"Chestnut Street 92","country":"United States","city":"Louisville","zip":"40202","phone":"555-625-1199","address2":null,"company":null,"province":null,"province_code":null,"country_code":null,"additional_phone":null},"line_items":[{"price":9.99,"quantity":1,"title":"Apple Gift Card","product_id":"P123","category":"Cards","brand":"Apple","product_type":null,"seller":null,"requires_shippling":null,"sku":null,"size":null,"condition":null,"sub_category":null,"delivered_at":null,"delivered_to":null},{"price":18.5,"quantity":1,"title":"Google Gift Card","product_id":"P456","category":"Cards","brand":"Google","product_type":null,"seller":null,"requires_shippling":null,"sku":null,"size":null,"condition":null,"sub_category":null,"delivered_at":null,"delivered_to":null}],"discount_codes":[{"amount":"2.0","code":"two-two"}],"shipping_lines":[{"title":"Free Shipping","price":"0.0","code":null,"company":null}],"source":"web","checkout_id":null,"vendor_id":null,"vendor_name":null,"order_type":null,"name":null,"updated_at":null,"cart_token":null,"note":null,"payment_details":null,"passengers":null,"decision":null,"charge_free_payment_details":null,"cancel_reason":null,"submission_reason":null}')
 
-            expect {@client.decide(order)}.to(raise_error(Riskified::Exceptions::RequestFailed))
+            expect {@client.decide(order)}.to(raise_error(Riskified::Exceptions::RequestFailedError))
           end
         end
 

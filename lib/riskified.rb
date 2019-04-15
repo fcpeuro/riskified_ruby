@@ -6,9 +6,9 @@ require 'riskified/client'
 # Exceptions
 require 'riskified/Exceptions/api_connection_error'
 require 'riskified/Exceptions/configuration_error'
-require 'riskified/Exceptions/request_failed'
-require 'riskified/Exceptions/response_parsing_failed'
-require 'riskified/Exceptions/unexpected_order_status'
+require 'riskified/Exceptions/request_failed_error'
+require 'riskified/Exceptions/response_parsing_error'
+require 'riskified/Exceptions/unexpected_order_status_error'
 # Entities
 require 'riskified/Entities/keyword_struct'
 require 'riskified/Entities/address'

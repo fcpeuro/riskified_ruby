@@ -19,7 +19,7 @@ module Riskified
       begin
         build_status_object(@parsed_response['order']['status'].downcase)
       rescue StandardError => e
-        raise Riskified::Exceptions::UnexpectedOrderStatus.new("Unable to extract order status from response: #{e.message}")
+        raise Riskified::Exceptions::UnexpectedOrderStatusError.new("Unable to extract order status from response: #{e.message}")
       end
     end
 
@@ -27,7 +27,7 @@ module Riskified
 
     # Raise an exception if the 'response_code' code is different than 200.
     def validate_code_is_200
-      raise Riskified::Exceptions::RequestFailed.new "Request Failed. Code: #{@response.code}. Message: #{@response.status_message}." if @response.code != 200
+      raise Riskified::Exceptions::RequestFailedError.new "Request Failed. Code: #{@response.code}. Message: #{@response.status_message}." if @response.code != 200
     end
 
     # Parse the JSON response body.
@@ -35,7 +35,7 @@ module Riskified
       begin
         @parsed_response = JSON.parse(@response.body)
       rescue StandardError => e
-        raise Riskified::Exceptions::ResponseParsingFailed.new("Unable to to parse JSON response: #{e.message}")
+        raise Riskified::Exceptions::ResponseParsingError.new("Unable to to parse JSON response: #{e.message}")
       end
     end
 
@@ -48,7 +48,7 @@ module Riskified
 
     # Raise an exception if the the 'order_status' is unexpected.
     def validate_order_status(order_status)
-      raise Riskified::Exceptions::UnexpectedOrderStatus.new "Unexpected Order Status: #{order_status}." if EXPECTED_ORDER_STATUSES.include? order_status === false
+      raise Riskified::Exceptions::UnexpectedOrderStatusError.new "Unexpected Order Status: #{order_status}." if EXPECTED_ORDER_STATUSES.include? order_status === false
     end
 
     def validate_response_type(response)

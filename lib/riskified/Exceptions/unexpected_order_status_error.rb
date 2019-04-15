@@ -3,7 +3,7 @@
 module Riskified
   module Exceptions
 
-    class RequestFailed < StandardError
+    class UnexpectedOrderStatusError < StandardError
     end
 
   end
