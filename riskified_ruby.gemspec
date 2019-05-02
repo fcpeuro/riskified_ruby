@@ -6,12 +6,12 @@ require "riskified/version"
 Gem::Specification.new do |spec|
   spec.name          = "riskified_ruby"
   spec.version       = Riskified::VERSION
-  spec.authors       = ["Julie Marin"]
-  spec.email         = ["julie.sylvana.marin@gmail.com"]
+  spec.authors       = ["Mahmoud Zalt", "Julie Marin"]
+  spec.email         = ["mahmoud.al.zalat@cg.nl", "julie.sylvana.marin@gmail.com"]
 
   spec.summary       = "Ruby bindings for the Riskified API"
   spec.description   = "Ruby library for integrating with the Riskified API"
-  spec.homepage      = "https://github.com/JulieMarin/riskified_ruby"
+  spec.homepage      = "https://github.com/cgservices/riskified_ruby"
   spec.license       = "MIT"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
@@ -33,7 +33,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "bundler", "~> 1.16"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "byebug"
-  
+
   spec.add_dependency "typhoeus", "~> 1.3.1"
-  spec.add_dependency "rspec", "~> 3.8.0"
+  spec.add_dependency "rspec", "~> 3.7.0"
+  spec.add_dependency "factory_bot", "~> 4.8.2"
 end

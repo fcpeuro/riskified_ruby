@@ -2,11 +2,13 @@
 
 Ruby client for the [Riskified API](https://apiref.riskified.com) using [Faraday](https://github.com/technoweenie/faraday).  Ruby > 2.0 is required.
 
+This Ruby client currently only supports the Sync flow.
+
 ## Installation
 
 Add this line to your application's Gemfile:
 
-    $ gem 'riskified_ruby', github: 'fcpeuro/riskified_ruby'
+    $ gem 'riskified_ruby', github: 'cgservices/riskified_ruby'
 
 ## Usage
 
@@ -16,35 +18,31 @@ Credentials must be configured before you make API calls using the gem.
 
 ```ruby
 Riskified.configure do |config|
-  config.auth_token = 'rw342fdj534'
-  config.default_referrer = 'www.example.com'
-  config.sandbox_mode = true
+  config.auth_token = 'xyz123'
+  config.shop_domain = 'www.example.nl'
+  config.default_referrer = 'www.example.nl'
+  config.sandbox_mode = true  # if using rails: !Rails.env.production?
 end
 ```
 
 * `config.auth_token` - your Riskified access key
 * `config.default_referrer` - Default referrer
+* `config.shop_domain` - Shop domain
 * `config.sandbox_mode` - Decide whether or not to use the sandbox endpoint
 
 The keys are available to you throughout your application as:
 
 ```ruby
-Riskified.configuration.auth_token
-Riskified.configuration.default_referrer
-Riskified.configuration.sandbox_mode
+Riskified.config.auth_token
+Riskified.config.shop_domain
+Riskified.config.default_referrer
+Riskified.config.sandbox_mode
 ```
 
 ### Creating the client
 
 ```ruby
 client = Riskified::Client.new
-client.checkout_create(order)
+order = Riskified::Entities::Order.new
+client.decide(order)
 ```
-
-## Contributing
-
-1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Added some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request

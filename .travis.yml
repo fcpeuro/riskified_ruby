@@ -1,0 +1,11 @@
+jobs:
+  include:
+    - stage: test
+      dist: trusty
+      sudo: required
+      language: ruby
+      cache:
+        - bundler
+      rvm: 2.4.4
+      script:
+        - bundle exec rspec

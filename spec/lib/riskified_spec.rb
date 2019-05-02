@@ -1,78 +1,104 @@
 require 'spec_helper'
-require 'SecureRandom'
 require 'byebug'
 
 module Riskified
-  describe 'Riskified Client' do
-      
-    before(:all) do
+  describe 'Riskified::Client' do
+
+    def configure_riskified
       Riskified.configure do |config|
-        config.default_referrer = 'www.example.com'
-        config.shop_domain = 'example.com'
-        config.auth_token = "<auth_token>"
+        config.auth_token = '<<<< SHOP_AUTH_TOKEN_GOES_HERE >>>>' # Note: make sure you never commit your token.
+        config.default_referrer = 'www.google.com'
+        config.shop_domain = 'www.recharge.com'
         config.sandbox_mode = true
       end
-      
+    end
+
+    let(:order) { build(:order) }
+
+    before(:all) do
+      @json_order = JSON.parse(File.read("#{File.dirname(__FILE__)}/../struct/order.json"))
+    end
+
+    before(:each) do |test|
+      configure_riskified unless test.metadata[:skip_configuration]
+
       @client = Riskified::Client.new
-      @data = JSON.parse(File.read("#{File.dirname(__FILE__)}/../struct/order_example.json"))
-    end
-    
-    before(:each) do
-      @order_num = "R" + ((SecureRandom.random_number(9e5) + 1e8).to_i).to_s
-    end
-    
-    def configure_payload(payload)
-      unless payload["id"]
-        payload["order"]["id"] = @order_num
-      else
-        payload["id"] = @order_num
-      end
-      payload
     end
 
-    context 'Submissions' do
-      let(:order)              { {"order": configure_payload(@data["order"])} }
-      let(:checkout)           { {"checkout": configure_payload(@data["order"])} }
-      let(:refund)             { configure_payload(@data["refund"]) }
-      let(:cancelled_order)    { configure_payload(@data["cancel"]) }
-      
-      
-      it "Loads order data" do
-        expect(@data).to be_an_instance_of(Hash)
+    context 'when missing connector configuration' do
+      it "it raises ConfigurationError", :skip_configuration do
+        expect {@client.decide(order)}.to(raise_error(Riskified::Exceptions::ConfigurationError))
       end
-      
-      it "Submits checkout create" do
-        response = JSON.parse(@client.checkout_create(checkout).body)
-        expect(response["checkout"]).not_to be_falsey
+    end
+
+    context 'when missing one configuration variable' do
+      it "it raises ConfigurationError", :skip_configuration do
+        Riskified.configure do |config|
+          config.auth_token = nil
+          config.default_referrer = 'whatever'
+          config.shop_domain = 'whatever'
+          config.sandbox_mode = true
+        end
+
+        expect {@client.decide(order)}.to(raise_error(Riskified::Exceptions::ConfigurationError))
       end
-      
-      it "Submits checkout denied" do
-        response = JSON.parse(@client.checkout_denied(checkout).body)
-        expect(response["checkout"]).not_to be_falsey
-      end
-      
-      it "Submits create" do
-        response = JSON.parse(@client.create(order).body)
-        expect(response["order"]).not_to be_falsey
-      end
-      
-      it "Submits update" do
-        response = JSON.parse(@client.update(order).body)
-        expect(response["order"]).not_to be_falsey
+    end
+
+    describe '.decide' do
+
+      def mock_decision_response(mocked_response_body, code = 200)
+        response = Typhoeus::Response.new(code: code, body: mocked_response_body)
+        Typhoeus.stub('https://sandbox.riskified.com/api/decide').and_return(response)
       end
 
-      it "Submits refund" do
-        @client.create(order)
-        response = JSON.parse(@client.refund(refund).body)
-        expect(response["order"]).not_to be_falsey
+      let(:shop_domain) {'www.recharge.com'}
+
+      context 'with sync flow' do
+        # must mock the response to avoid sending http requests
+        before(:each) {mock_decision_response(mocked_response_body, mocked_response_code)}
+
+        context 'when missing order id' do
+          let(:mocked_response_body) {'{"error":{"message":"JSON malformed - no id key for order"}}'}
+          let(:mocked_response_code) {400}
+          it "it raises RequestFailedError" do
+            expect {@client.decide(order)}.to(raise_error(Riskified::Exceptions::RequestFailedError))
+          end
+        end
+
+        context 'when missing order root key' do
+          let(:mocked_response_body) {'{"error":{"message":"JSON malformed - no order root key"}}'}
+          let(:mocked_response_code) {400}
+          it "it raises RequestFailedError" do
+            # remove the order root key from the json object
+            allow(order).to(receive(:convert_to_json)).and_return('@json_order')
+
+            expect {@client.decide(order)}.to(raise_error(Riskified::Exceptions::RequestFailedError))
+          end
+        end
+
+        context 'when order is fraud' do
+          let(:mocked_response_body) {"{\"order\":{\"id\":\"1\",\"status\":\"declined\",\"description\":\"Orderexhibitsstrongfraudulentindicators\",\"category\":\"Fraudulent\"}}"}
+          let(:mocked_response_code) {200}
+          it "gets declined response" do
+            order.email = 'test@decline.com'
+            response_object = @client.decide(order)
+
+            expect(response_object.to_string).to(eq("declined"))
+          end
+        end
+
+        context 'when order is not fraud' do
+          let(:mocked_response_body) {"{\"order\":{\"id\":\"2\",\"status\":\"approved\",\"description\":\"Reviewed and approved by Riskified\"}}"}
+          let(:mocked_response_code) {200}
+          it "gets approved response" do
+            order.email = 'test@approve.com'
+            response_object = @client.decide(order)
+
+            expect(response_object.to_string).to(eq("approved"))
+          end
+        end
+
       end
-      
-      it "Submits cancellation" do
-        @client.create(order)
-        response = JSON.parse(@client.cancel(cancelled_order).body)
-        expect(response["order"]).not_to be_falsey
-      end
-      
     end
   end
 end
