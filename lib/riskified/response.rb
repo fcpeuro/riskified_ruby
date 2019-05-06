@@ -20,11 +20,24 @@ module Riskified
 
       begin
         status = @parsed_response['order']['status'].downcase
+        validate_order_status(status)
+        return status
       rescue StandardError => e
         raise Riskified::Exceptions::UnexpectedOrderStatusError.new("Unable to extract order status from response. Error Message #{e.message}. Response Body: #{@response.body}. Request Body: #{@request_body}.")
       end
 
-      build_status_object(status)
+    end
+
+    def body
+      @parsed_response
+    end
+
+    def code
+      @response.code
+    end
+
+    def message
+      @response.status_message
     end
 
     private
@@ -41,13 +54,6 @@ module Riskified
       rescue StandardError => e
         raise Riskified::Exceptions::ResponseParsingError.new("Unable to to parse JSON response. Error Message: #{e.message}. Response Body: #{@response.body}. Request Body: #{@request_body}.")
       end
-    end
-
-    # Initialize status object from the 'order_status' string.
-    def build_status_object(order_status)
-      validate_order_status(order_status)
-
-      Object.const_get("Riskified::Statuses::#{order_status.capitalize}").new
     end
 
     # Raise an exception if the the 'order_status' is unexpected.
