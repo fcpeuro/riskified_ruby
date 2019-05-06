@@ -18,10 +18,6 @@ require 'riskified/Entities/discount_code'
 require 'riskified/Entities/line_item'
 require 'riskified/Entities/order'
 require 'riskified/Entities/shipping_line'
-# Statuses
-require "riskified/Statuses/status_mixins"
-require 'riskified/Statuses/approved'
-require 'riskified/Statuses/declined'
 
 module Riskified
   class << self
