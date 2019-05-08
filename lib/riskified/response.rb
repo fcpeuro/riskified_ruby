@@ -23,7 +23,7 @@ module Riskified
         validate_order_status(status)
         return status
       rescue StandardError => e
-        raise Riskified::Exceptions::UnexpectedOrderStatusError.new("Unable to extract order status from response. Error Message #{e.message}. Response Body: #{@response.body}. Request Body: #{@request_body}.")
+        raise Riskified::Exceptions::UnexpectedOrderStatusError.new("Invalid order status in response [#{@parsed_response}]. Error Message #{e.message}.")
       end
 
     end
@@ -44,7 +44,7 @@ module Riskified
 
     # Raise an exception if the 'response_code' code is different than 200.
     def validate_code_is_200
-      raise Riskified::Exceptions::RequestFailedError.new "Request Failed. Response Code: #{@response.code}. Response Message: #{@response.status_message}. Request Body: #{@request_body}." if @response.code != 200
+      raise Riskified::Exceptions::RequestFailedError.new "Request Failed. Response Code: #{@response.code}. Response Message: #{@response.status_message}." if @response.code != 200
     end
 
     # Parse the JSON response body.
@@ -52,13 +52,13 @@ module Riskified
       begin
         @parsed_response = JSON.parse(@response.body)
       rescue StandardError => e
-        raise Riskified::Exceptions::ResponseParsingError.new("Unable to to parse JSON response. Error Message: #{e.message}. Response Body: #{@response.body}. Request Body: #{@request_body}.")
+        raise Riskified::Exceptions::ResponseParsingError.new("Unable to to parse JSON response [#{@parsed_response}]. Error Message: #{e.message}.")
       end
     end
 
     # Raise an exception if the the 'order_status' is unexpected.
     def validate_order_status(order_status)
-      raise Riskified::Exceptions::UnexpectedOrderStatusError.new "Unexpected Order Status: #{order_status}. Response Body: #{@response.body}. Request Body: #{@request_body}." unless EXPECTED_ORDER_STATUSES.include? order_status
+      raise Riskified::Exceptions::UnexpectedOrderStatusError.new "Unexpected Order Status: #{order_status}." unless EXPECTED_ORDER_STATUSES.include? order_status
     end
 
     def validate_response_type(response)
