@@ -12,12 +12,11 @@ module Riskified
       @request_body = request_body
 
       parse_json
+      validate_code_is_200
     end
 
     # Read the status string from the parsed response and convert it to status object (the risk decision).
     def extract_order_status
-      validate_code_is_200
-
       begin
         status = @parsed_response['order']['status'].downcase
         validate_order_status(status)
@@ -25,7 +24,6 @@ module Riskified
       rescue StandardError => e
         raise Riskified::Exceptions::UnexpectedOrderStatusError.new("Invalid order status in response [#{@parsed_response}]. Error Message #{e.message}.")
       end
-
     end
 
     def body
