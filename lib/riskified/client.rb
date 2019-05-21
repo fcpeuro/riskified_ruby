@@ -5,7 +5,7 @@ module Riskified
 
     # Call the '/decide' endpoint.
     # @param riskified_order [Riskified::Entities::Order] Order information.
-    # @return [Approved | Declined]
+    # @return [Riskified::Response]
     def decide(riskified_order)
       make_request("/api/decide", riskified_order)
     end
@@ -22,9 +22,6 @@ module Riskified
           resource,
           riskified_order.convert_to_json
       ).send
-
-      # returns the Order Status Object
-      response.extract_order_status
     end
 
     # Raise error if riskified_order in not of type Riskified::Entities::Order

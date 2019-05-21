@@ -83,7 +83,7 @@ module Riskified
             order.email = 'test@decline.com'
             response_object = @client.decide(order)
 
-            expect(response_object.to_string).to(eq("declined"))
+            expect(response_object.extract_order_status).to(eq("declined"))
           end
         end
 
@@ -94,7 +94,7 @@ module Riskified
             order.email = 'test@approve.com'
             response_object = @client.decide(order)
 
-            expect(response_object.to_string).to(eq("approved"))
+            expect(response_object.extract_order_status).to(eq("approved"))
           end
         end
 
