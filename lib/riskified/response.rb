@@ -14,8 +14,9 @@ module Riskified
       parse_response_body
     end
 
+
     # Read the status string from the parsed response and convert it to status object (the risk decision).
-    def extract_order_status
+    def status
       begin
         status = @parsed_response['order']['status'].downcase
         validate_order_status(status)
