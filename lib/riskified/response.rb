@@ -25,6 +25,11 @@ module Riskified
       end
     end
 
+    # Read the status string from the parsed response and convert it to status object (the risk decision).
+    def description
+      @parsed_response['order']['description']
+    end
+
     def body
       @parsed_response
     end
