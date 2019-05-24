@@ -76,6 +76,17 @@ module Riskified
           end
         end
 
+        context 'when connection is down' do
+          let(:mocked_response_body) {'{"error":{"message":"bla bla bla"}}'}
+          let(:mocked_response_code) {0}
+          it "it raises RequestFailedError" do
+            # remove the order root key from the json object
+            allow(order).to(receive(:convert_to_json)).and_return('@json_order')
+
+            expect {@client.decide(order)}.to(raise_error(Riskified::Exceptions::ApiConnectionError))
+          end
+        end
+
         context 'when order is fraud' do
           let(:mocked_response_body) {"{\"order\":{\"id\":\"1\",\"status\":\"declined\",\"description\":\"Orderexhibitsstrongfraudulentindicators\",\"category\":\"Fraudulent\"}}"}
           let(:mocked_response_code) {200}
