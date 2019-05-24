@@ -14,31 +14,26 @@ module Riskified
     end
 
     def send
-      begin
-        request = Typhoeus::Request.new(
-            endpoint,
-            method: :post,
-            body: @json_body,
-            headers: prepare_headers
-        )
+      request = Typhoeus::Request.new(
+          endpoint,
+          method: :post,
+          body: @json_body,
+          headers: prepare_headers
+      )
 
-        request.on_complete do |response|
-          if !response.success?
-            raise Riskified::Exceptions::RequestFailedError.new("API request Failed. Response Code: '#{response.code}'. Response Message: '#{response.status_message}'.")
-          elsif response.timed_out?
-            raise Riskified::Exceptions::RequestFailedError.new("API request was timed out.")
-          elsif response.code == 0
-            raise Riskified::Exceptions::RequestFailedError.new("API request failed. Could not get an HTTP response, something's wrong. Response Code: '#{response.code}'.")
-          elsif response.code != 200
-            raise Riskified::Exceptions::RequestFailedError.new("API request failed. Response Code: '#{response.code}'. Response Message: '#{response.status_message}'.")
-          end
+      request.on_complete do |response|
+        if !response.success?
+          raise Riskified::Exceptions::RequestFailedError.new("API request Failed. Response Code: '#{response.code}'. Response Message: '#{response.status_message}'.")
+        elsif response.timed_out?
+          raise Riskified::Exceptions::ApiConnectionError.new("Unable to connect. Request was timed out.")
+        elsif response.code == 0
+          raise Riskified::Exceptions::ApiConnectionError.new("Unable to connect. Could not get an HTTP response. Response Code: '#{response.code}'.")
+        elsif response.code != 200
+          raise Riskified::Exceptions::RequestFailedError.new("API request failed. Response Code: '#{response.code}'. Response Message: '#{response.status_message}'.")
         end
-
-        response = request.run
-
-      rescue StandardError => e
-        raise Riskified::Exceptions::ApiConnectionError.new("Unable to connect. Error Message: '#{e.message}'.")
       end
+
+      response = request.run
 
       Riskified::Response.new(response, @json_body)
     end
