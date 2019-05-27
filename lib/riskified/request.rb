@@ -14,18 +14,24 @@ module Riskified
     end
 
     def send
-      begin
-        request = Typhoeus::Request.new(
-            endpoint,
-            method: :post,
-            body: @json_body,
-            headers: prepare_headers
-        )
+      request = Typhoeus::Request.new(
+          endpoint,
+          method: :post,
+          body: @json_body,
+          headers: prepare_headers
+      )
 
-        response = request.run
-      rescue StandardError => e
-        raise Riskified::Exceptions::ApiConnectionError.new(e.message)
+      request.on_complete do |response|
+        if response.timed_out?
+          raise Riskified::Exceptions::RequestTimedOutError.new("Unable to connect. Request was timed out. Total Time: '#{response.total_time}'.")
+        elsif response.code == 0
+          raise Riskified::Exceptions::ApiConnectionError.new("Unable to connect. Could not get an HTTP response. Response Code: '#{response.code}'.")
+        elsif response.code != 200
+          raise Riskified::Exceptions::RequestFailedError.new("API request failed. Response Code: '#{response.code}'. Response Message: '#{response.status_message}'.")
+        end
       end
+
+      response = request.run
 
       Riskified::Response.new(response, @json_body)
     end
