@@ -23,7 +23,7 @@ module Riskified
 
       request.on_complete do |response|
         if response.timed_out?
-          raise Riskified::Exceptions::ApiConnectionError.new("Unable to connect. Request was timed out.")
+          raise Riskified::Exceptions::RequestTimedOutError.new("Unable to connect. Request was timed out. Total Time: '#{response.total_time}'.")
         elsif response.code == 0
           raise Riskified::Exceptions::ApiConnectionError.new("Unable to connect. Could not get an HTTP response. Response Code: '#{response.code}'.")
         elsif response.code != 200
