@@ -43,6 +43,10 @@ module Riskified
       @response.status_message
     end
 
+    def request_body
+      @request_body
+    end
+
     private
 
     # Parse the JSON response body.
