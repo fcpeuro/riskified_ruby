@@ -19,13 +19,14 @@ module Riskified
         #### Optional #####
 
         :seller, # [Seller]
-        :requires_shippling,
+        :requires_shipping,
         :sku,
         :size,
         :condition,
         :sub_category,
         :delivered_at,
         :delivered_to, # (shipping_address, store_pickup)
+        :recipient, # [Recipient]
     )
 
   end
