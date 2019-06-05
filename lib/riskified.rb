@@ -18,6 +18,9 @@ require 'riskified/Entities/discount_code'
 require 'riskified/Entities/line_item'
 require 'riskified/Entities/order'
 require 'riskified/Entities/shipping_line'
+require 'riskified/Entities/recipient'
+require 'riskified/Entities/paypal_details'
+require 'riskified/Entities/credit_card_details'
 
 module Riskified
   class << self
