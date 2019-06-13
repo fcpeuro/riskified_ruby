@@ -17,7 +17,7 @@ module Riskified
         #### Optional #####
 
         :authorization_id,
-        :authorization_error,
+        :authorization_error, # [AuthorizationError]
     )
   end
 end

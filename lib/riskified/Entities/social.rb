@@ -24,7 +24,6 @@ module Riskified
         :posts,
         :auth_token,
         :social_data
-
         )
 
   end
