@@ -21,6 +21,7 @@ require 'riskified/Entities/shipping_line'
 require 'riskified/Entities/recipient'
 require 'riskified/Entities/paypal_details'
 require 'riskified/Entities/credit_card_details'
+require 'riskified/Entities/social'
 
 module Riskified
   class << self
