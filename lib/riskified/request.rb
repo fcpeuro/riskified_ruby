@@ -27,7 +27,7 @@ module Riskified
         elsif response.code == 0
           raise Riskified::Exceptions::ApiConnectionError.new("Unable to connect. Could not get an HTTP response. Response Code: '#{response.code}'.")
         elsif response.code != 200
-          raise Riskified::Exceptions::RequestFailedError.new("API request failed. Response Code: '#{response.code}'. Response Message: '#{response.status_message}'.")
+          raise Riskified::Exceptions::RequestFailedError.new("API request failed. Response Code: '#{response.code}'. Response Message: '#{response.status_message}'. Response Body: '#{response.body}'.")
         end
       end
 
