@@ -66,6 +66,10 @@ module Riskified
         order[:shipping_lines]&.each {|i| shipping_lines.push i.to_h}
         order[:shipping_lines] = shipping_lines
 
+        payment_details = Array.new
+        order[:payment_details]&.each {|i| payment_details.push i.to_h}
+        order[:payment_details] = payment_details
+
         {order: order}.to_json
 
       end
