@@ -27,6 +27,7 @@ module Riskified
 
     context 'when missing connector configuration' do
       it "it raises ConfigurationError", :skip_configuration do
+
         expect {@client.decide(order)}.to(raise_error(Riskified::Exceptions::ConfigurationError))
       end
     end
@@ -61,7 +62,8 @@ module Riskified
           let(:mocked_response_body) {'{"error":{"message":"JSON malformed - no id key for order"}}'}
           let(:mocked_response_code) {400}
           it "it raises RequestFailedError" do
-            expect {@client.decide(order)}.to(raise_error(Riskified::Exceptions::RequestFailedError))
+            @client.decide(order)
+            expect {@client.execute}.to(raise_error(Riskified::Exceptions::RequestFailedError))
           end
         end
 
@@ -71,8 +73,8 @@ module Riskified
           it "it raises RequestFailedError" do
             # remove the order root key from the json object
             allow(order).to(receive(:convert_to_json)).and_return('@json_order')
-
-            expect {@client.decide(order)}.to(raise_error(Riskified::Exceptions::RequestFailedError))
+            @client.decide(order)
+            expect {@client.execute}.to(raise_error(Riskified::Exceptions::RequestFailedError))
           end
         end
 
@@ -82,8 +84,8 @@ module Riskified
           it "it raises RequestFailedError" do
             # remove the order root key from the json object
             allow(order).to(receive(:convert_to_json)).and_return('@json_order')
-
-            expect {@client.decide(order)}.to(raise_error(Riskified::Exceptions::ApiConnectionError))
+            @client.decide(order)
+            expect {@client.execute}.to(raise_error(Riskified::Exceptions::ApiConnectionError))
           end
         end
 
@@ -92,7 +94,8 @@ module Riskified
           let(:mocked_response_code) {200}
           it "gets declined response" do
             order.email = 'test@decline.com'
-            response_object = @client.decide(order)
+            @client.decide(order)
+            response_object = @client.execute
 
             expect(response_object.status).to(eq("declined"))
           end
@@ -103,7 +106,8 @@ module Riskified
           let(:mocked_response_code) {200}
           it "gets approved response" do
             order.email = 'test@approve.com'
-            response_object = @client.decide(order)
+            @client.decide(order)
+            response_object = @client.execute
 
             expect(response_object.status).to(eq("approved"))
           end

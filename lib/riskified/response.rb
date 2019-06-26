@@ -5,15 +5,15 @@ module Riskified
 
     EXPECTED_ORDER_STATUSES = %w(approved declined).freeze
 
-    def initialize(response, request_body = '')
+    def initialize(response, request)
       validate_response_type(response)
 
       @response = response
-      @request_body = request_body
+      @request_body = request.options[:body]
+      @request_headers = request.options[:headers]
 
       parse_response_body
     end
-
 
     # Read the status string from the parsed response and convert it to status object (the risk decision).
     def status
@@ -41,6 +41,10 @@ module Riskified
 
     def message
       @response.status_message
+    end
+
+    def request_headers
+      @request_headers
     end
 
     def request_body

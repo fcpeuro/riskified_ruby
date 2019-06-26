@@ -11,6 +11,7 @@ module Riskified
     def initialize(resource, json_body)
       @resource = resource
       @json_body = json_body
+      @headers = prepare_headers
     end
 
     def send
@@ -18,7 +19,7 @@ module Riskified
           endpoint,
           method: :post,
           body: @json_body,
-          headers: prepare_headers
+          headers: @headers
       )
 
       request.on_complete do |response|
@@ -31,9 +32,15 @@ module Riskified
         end
       end
 
-      response = request.run
+      Riskified::Response.new(request.run, request)
+    end
 
-      Riskified::Response.new(response, @json_body)
+    def json_body
+      @json_body
+    end
+
+    def json_headers
+      @headers.to_json
     end
 
     private

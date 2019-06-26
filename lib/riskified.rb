@@ -42,6 +42,10 @@ module Riskified
     @configuration = Configuration.new
   end
 
+  def self.client
+    Client.new
+  end
+
   def self.configure
     yield(config)
   end
