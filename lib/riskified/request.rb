@@ -43,6 +43,10 @@ module Riskified
       @headers.to_json
     end
 
+    def endpoint
+      base_url + @resource
+    end
+
     private
 
     # Return POST request headers.
@@ -65,18 +69,14 @@ module Riskified
       Riskified.config.shop_domain
     end
 
-    def endpoint
-      base_url + @resource
-    end
-
     # Build the post request base URL.
     def base_url
-      Riskified.config.sandbox_mode === true ? SANDBOX_URL : live_url
+      Riskified.config.sandbox_mode ? SANDBOX_URL : live_url
     end
 
     # Return the live url after checking which flow is configured (sync or async).
     def live_url
-      Riskified.config.sync_mode === true ? SYNC_LIVE_URL : ASYNC_LIVE_URL
+      Riskified.config.sync_mode ? SYNC_LIVE_URL : ASYNC_LIVE_URL
     end
 
   end
