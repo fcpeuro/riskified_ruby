@@ -11,6 +11,7 @@ module Riskified
       @response = response
       @request_body = request.options[:body]
       @request_headers = request.options[:headers]
+      @url = request.base_url
 
       parse_response_body
     end
@@ -49,6 +50,10 @@ module Riskified
 
     def request_body
       @request_body
+    end
+
+    def url
+      @url
     end
 
     private
