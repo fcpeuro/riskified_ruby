@@ -20,7 +20,6 @@ module Riskified
         :customer, # Customer
         :client_details, # ClientDetails
         :billing_address, # Address
-        :shipping_address, # Address
         :line_items, # [LineItem]
         :discount_codes, # [DiscountCode]
         :shipping_lines, # [ShippingLines]
@@ -52,7 +51,6 @@ module Riskified
         order[:customer] = order[:customer].to_h
         order[:client_details] = order[:client_details].to_h
         order[:billing_address] = order[:billing_address].to_h
-        order[:shipping_address] = order[:shipping_address].to_h
 
         line_items = Array.new
         order[:line_items]&.each {|i| line_items.push i.to_h}

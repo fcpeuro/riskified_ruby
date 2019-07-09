@@ -73,18 +73,6 @@ FactoryBot.define do
             phone: '555-625-1199',
         )
       }
-      shipping_address {
-        Riskified::Entities::Address.new(
-            first_name: 'Jone',
-            last_name: 'Doe',
-            address1: 'Chestnut Street 92',
-            country: 'United States',
-            city: 'Louisville',
-            zip: '40202',
-            phone: '555-625-1199',
-        )
-      }
-
     }
   end
 
