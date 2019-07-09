@@ -16,6 +16,7 @@ module Riskified
 
         #### Optional #####
 
+        :cardholder_name,
         :authorization_id,
         :authorization_error, # [AuthorizationError]
     )
