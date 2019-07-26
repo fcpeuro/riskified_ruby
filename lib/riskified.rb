@@ -23,6 +23,7 @@ require 'riskified/Entities/paypal_details'
 require 'riskified/Entities/credit_card_details'
 require 'riskified/Entities/decision'
 require 'riskified/Entities/decision_details'
+require 'riskified/Entities/social'
 
 module Riskified
   class << self
