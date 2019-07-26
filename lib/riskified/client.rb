@@ -4,10 +4,21 @@ module Riskified
   class Client
 
     # Call the '/decide' endpoint.
-    # @param riskified_order [Riskified::Entities::Order] Order information.
+    # @param order [Riskified::Entities::Order] Order information.
     # @return [Riskified::Response]
-    def decide(riskified_order)
-      prepare_request("/api/decide", riskified_order)
+    def decide(order)
+			raise ArgumentError('Invalid Riskified Order Type.') unless order.is_a?(Riskified::Entities::Order)
+
+      prepare_request("/api/decide", order)
+		end
+
+		# Call the '/decision' endpoint.
+		# @param decision [Riskified::Entities::Decision] Decision information.
+		# @return [Riskified::Response]
+		def decision(decision)
+			raise ArgumentError('Invalid Riskified Decision Type.') unless decision.is_a?(Riskified::Entities::Decision)
+
+      prepare_request("/api/decision", decision)
     end
 
     # @return [Riskified::Request]
@@ -18,20 +29,13 @@ module Riskified
     private
 
     # Make an HTTP post request to the Riskified API.
-    def prepare_request(resource, riskified_order)
-      validate_riskified_order_type(riskified_order)
-
+    def prepare_request(resource, body)
       Riskified.validate_configuration
 
       @request = Riskified::Request.new(
           resource,
-          riskified_order.convert_to_json
+					body.convert_to_json
       )
-    end
-
-    # Raise error if riskified_order in not of type Riskified::Entities::Order
-    def validate_riskified_order_type(riskified_order)
-      raise ArgumentError('Invalid Riskified Order Type.') unless riskified_order.is_a?(Riskified::Entities::Order)
     end
 
   end
