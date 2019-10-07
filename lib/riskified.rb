@@ -12,6 +12,8 @@ require 'riskified/Exceptions/unexpected_order_status_error'
 # Entities
 require 'riskified/Entities/keyword_struct'
 require 'riskified/Entities/address'
+require 'riskified/Entities/chargeback_details'
+require 'riskified/Entities/chargeback_message'
 require 'riskified/Entities/client_details'
 require 'riskified/Entities/customer'
 require 'riskified/Entities/discount_code'

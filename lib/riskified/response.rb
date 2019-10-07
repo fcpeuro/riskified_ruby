@@ -3,7 +3,7 @@ require 'json'
 module Riskified
   class Response
 
-    EXPECTED_ORDER_STATUSES = %w(approved declined).freeze
+    EXPECTED_ORDER_STATUSES = %w(approved declined chargeback).freeze
 
     def initialize(response, request)
       validate_response_type(response)
