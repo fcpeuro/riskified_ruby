@@ -2,23 +2,31 @@ require 'riskified/configuration'
 
 module Riskified
   class Client
-
     # Call the '/decide' endpoint.
     # @param order [Riskified::Entities::Order] Order information.
     # @return [Riskified::Response]
     def decide(order)
-			raise ArgumentError('Invalid Riskified Order Type.') unless order.is_a?(Riskified::Entities::Order)
+      raise ArgumentError('Invalid Riskified Order Type.') unless order.is_a?(Riskified::Entities::Order)
 
       prepare_request("/api/decide", order)
-		end
+    end
 
-		# Call the '/decision' endpoint.
-		# @param decision [Riskified::Entities::Decision] Decision information.
-		# @return [Riskified::Response]
-		def decision(decision)
-			raise ArgumentError('Invalid Riskified Decision Type.') unless decision.is_a?(Riskified::Entities::Decision)
+    # Call the '/decision' endpoint.
+    # @param decision [Riskified::Entities::Decision] Decision information.
+    # @return [Riskified::Response]
+    def decision(decision)
+      raise ArgumentError('Invalid Riskified Decision Type.') unless decision.is_a?(Riskified::Entities::Decision)
 
       prepare_request("/api/decision", decision)
+    end
+
+    # Call the '/chargeback' endpoint.
+    # @param chargeback [Riskified::Entities::Chargeback] Chargeback information.
+    # @return [Riskified::Response]
+    def chargeback(chargeback)
+      raise ArgumentError('Invalid Riskified Chargeback Type.') unless chargeback.is_a?(Riskified::Entities::ChargebackMessage)
+
+      prepare_request("/api/chargeback", chargeback)
     end
 
     # @return [Riskified::Request]
@@ -34,9 +42,8 @@ module Riskified
 
       @request = Riskified::Request.new(
           resource,
-					body.convert_to_json
+          body.convert_to_json
       )
     end
-
   end
 end

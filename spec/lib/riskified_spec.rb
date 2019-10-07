@@ -14,6 +14,7 @@ module Riskified
     end
 
     let(:order) { build(:order) }
+    let(:chargeback) { build(:chargeback) }
 
     before(:all) do
       @json_order = JSON.parse(File.read("#{File.dirname(__FILE__)}/../struct/order.json"))
@@ -113,6 +114,28 @@ module Riskified
           end
         end
 
+      end
+    end
+
+    describe '.chargeback' do
+
+      def mock_chargeback_response(mocked_response_body, code = 200)
+        response = Typhoeus::Response.new(code: code, body: mocked_response_body)
+        Typhoeus.stub('https://sandbox.riskified.com/api/chargeback').and_return(response)
+      end
+
+      before(:each) {mock_chargeback_response(mocked_response_body, mocked_response_code)}
+      let(:shop_domain) {'www.recharge.com'}
+
+      context 'when order is chargedback' do
+        let(:mocked_response_body) {"{\"order\":{\"id\":\"1\",\"status\":\"chargeback\",\"description\":\"Orderexhibitsstrongfraudulentindicators\",\"category\":\"Fraudulent\"}}"}
+        let(:mocked_response_code) {200}
+        it "gets chargeback response" do
+          @client.chargeback(chargeback)
+          response_object = @client.execute
+
+          expect(response_object.status).to(eq("chargeback"))
+        end
       end
     end
   end
