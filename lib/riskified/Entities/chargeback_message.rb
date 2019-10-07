@@ -6,7 +6,7 @@ module Riskified
     ## Reference: http://apiref.riskified.com/java/#models-chargeback-details
     ChargebackMessage = Riskified::Entities::KeywordStruct.new(
       :id, # order id
-      :chargeback_details, # [ChargebackDetails]
+      :chargeback_details, # ChargebackDetails
     ) do
 
       def convert_to_json

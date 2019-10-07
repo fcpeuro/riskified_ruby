@@ -130,7 +130,7 @@ module Riskified
       context 'when order is chargedback' do
         let(:mocked_response_body) {"{\"order\":{\"id\":\"1\",\"status\":\"chargeback\",\"description\":\"Orderexhibitsstrongfraudulentindicators\",\"category\":\"Fraudulent\"}}"}
         let(:mocked_response_code) {200}
-        it "gets approved response" do
+        it "gets chargeback response" do
           @client.chargeback(chargeback)
           response_object = @client.execute
 
