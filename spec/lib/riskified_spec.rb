@@ -121,20 +121,20 @@ module Riskified
 
       def mock_chargeback_response(mocked_response_body, code = 200)
         response = Typhoeus::Response.new(code: code, body: mocked_response_body)
-        Typhoeus.stub('https://sandbox.riskified.com/api/decide').and_return(response)
+        Typhoeus.stub('https://sandbox.riskified.com/api/chargeback').and_return(response)
       end
 
+      before(:each) {mock_chargeback_response(mocked_response_body, mocked_response_code)}
       let(:shop_domain) {'www.recharge.com'}
 
       context 'when order is chargedback' do
         let(:mocked_response_body) {"{\"order\":{\"id\":\"1\",\"status\":\"chargeback\",\"description\":\"Orderexhibitsstrongfraudulentindicators\",\"category\":\"Fraudulent\"}}"}
         let(:mocked_response_code) {200}
         it "gets approved response" do
-          puts chargeback
-          # @client.chargeback(chargeback)
-          # response_object = @client.execute
+          @client.chargeback(chargeback)
+          response_object = @client.execute
 
-          # expect(response_object.status).to(eq("chargeback"))
+          expect(response_object.status).to(eq("chargeback"))
         end
       end
     end
