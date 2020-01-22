@@ -19,5 +19,13 @@ FactoryBot.define do
         card_issuer: "Testing Test"
       )
     }
+    dispute_details {
+      Riskified::Entities::DisputeDetails.new(
+        id: nil,
+        case_id: "11",
+        status: "status",
+        dispute_type: "won"
+      )
+    }
   end
 end
