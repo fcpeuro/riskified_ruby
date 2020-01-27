@@ -24,7 +24,9 @@ FactoryBot.define do
         id: nil,
         case_id: "11",
         status: "status",
-        dispute_type: "won"
+        dispute_type: "won",
+        expected_resolution_date: "2017-07-15",
+        disputed_at: "2017-06-01",
       )
     }
   end
