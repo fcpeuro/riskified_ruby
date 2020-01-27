@@ -7,7 +7,9 @@ module Riskified
       :id,
       :case_id,
       :status,
-      :dispute_type
+      :dispute_type,
+      :disputed_at,
+      :expected_resolution_date
     )
   end
 end
