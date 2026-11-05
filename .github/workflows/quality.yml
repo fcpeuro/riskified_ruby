@@ -1,0 +1,37 @@
+name: Code quality
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  standard:
+    name: StandardRB
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.4"
+      - name: Install StandardRB
+        run: gem install standard --no-document
+      - name: Lint and apply safe fixes
+        run: standardrb --fix
+      - name: Verify formatting is committed
+        run: git diff --exit-code
+
+  brakeman:
+    name: Brakeman
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.4"
+      - name: Install Brakeman
+        run: gem install brakeman --no-document
+      - name: Scan application
+        run: brakeman --force --no-pager

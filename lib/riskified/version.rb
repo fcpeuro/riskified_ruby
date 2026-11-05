@@ -1,7 +1,7 @@
 module Riskified
-  Major = 0
-  Minor = 1
-  Tiny = 0
+  MAJOR = 0
+  MINOR = 1
+  TINY = 0
 
-  VERSION = "#{Major}.#{Minor}.#{Tiny}"
+  VERSION = "#{MAJOR}.#{MINOR}.#{TINY}"
 end

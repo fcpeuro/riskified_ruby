@@ -1,6 +1,6 @@
 # Riskified API Client
 
-Ruby client for the [Riskified API](https://apiref.riskified.com) using [Faraday](https://github.com/technoweenie/faraday).  Ruby > 2.0 is required.
+Ruby client for the [Riskified API](https://apiref.riskified.com) using [Typhoeus](https://github.com/typhoeus/typhoeus). Ruby 2.1 or newer is required.
 
 ## Installation
 

@@ -1,12 +1,11 @@
 require "typhoeus"
 require "openssl"
-require 'json'
+require "json"
 
-require 'riskified/configuration'
+require "riskified/configuration"
 
 module Riskified
   class Client
-
     SANDBOX_URL = "https://sandbox.riskified.com".freeze
     LIVE_URL = "https://wh.riskified.com".freeze
 
@@ -37,30 +36,29 @@ module Riskified
     private
 
     def base_url
-      Riskified.config.sandbox_mode == true ? SANDBOX_URL : LIVE_URL
+      (Riskified.config.sandbox_mode == true) ? SANDBOX_URL : LIVE_URL
     end
 
     def calc_hmac(body)
-      OpenSSL::HMAC.hexdigest('SHA256', Riskified.config.auth_token, body)
+      OpenSSL::HMAC.hexdigest("SHA256", Riskified.config.auth_token, body)
     end
 
     def post_request(endpoint, body)
       formatted_body = body.to_json
 
       request = Typhoeus::Request.new(
-        (base_url + endpoint),
+        base_url + endpoint,
         method: :post,
         body: formatted_body,
         headers: {
           "Content-Type": "application/json",
-          "ACCEPT": "application/vnd.riskified.com; version=2",
+          ACCEPT: "application/vnd.riskified.com; version=2",
           "X-RISKIFIED-SHOP-DOMAIN": Riskified.config.shop_domain,
           "X-RISKIFIED-HMAC-SHA256": calc_hmac(formatted_body)
         }
       )
 
-      request.run 
+      request.run
     end
-
   end
 end
