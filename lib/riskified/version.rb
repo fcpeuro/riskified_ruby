@@ -1,6 +1,6 @@
 module Riskified
   MAJOR = 0
-  MINOR = 1
+  MINOR = 2
   TINY = 0
 
   # Keep the original constants available for callers that referenced them.
