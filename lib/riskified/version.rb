@@ -1,7 +1,14 @@
 module Riskified
-  Major = 0
-  Minor = 1
-  Tiny = 0
+  MAJOR = 0
+  MINOR = 2
+  TINY = 0
 
-  VERSION = "#{Major}.#{Minor}.#{Tiny}"
+  # Keep the original constants available for callers that referenced them.
+  # standard:disable Naming/ConstantName
+  Major = MAJOR
+  Minor = MINOR
+  Tiny = TINY
+  # standard:enable Naming/ConstantName
+
+  VERSION = "#{MAJOR}.#{MINOR}.#{TINY}"
 end

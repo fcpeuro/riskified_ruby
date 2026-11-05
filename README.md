@@ -1,6 +1,8 @@
 # Riskified API Client
 
-Ruby client for the [Riskified API](https://apiref.riskified.com) using [Faraday](https://github.com/technoweenie/faraday).  Ruby > 2.0 is required.
+Ruby client for the [Riskified API](https://apiref.riskified.com) using [Typhoeus](https://github.com/typhoeus/typhoeus). Ruby 2.1 or newer is required.
+
+The gem's declared minimum remains Ruby 2.1. The Ruby core team currently maintains MRI 3.3 (security maintenance), 3.4, and 4.0; those versions are covered by CI. Older Ruby branches are end-of-life and are not tested in CI.
 
 ## Installation
 
@@ -48,3 +50,15 @@ client.checkout_create(order)
 3. Commit your changes (`git commit -am 'Added some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
+
+### Development checks
+
+Install dependencies with `bundle install`, then run:
+
+```sh
+bundle exec rake
+bundle exec standardrb
+bundle exec brakeman --force --no-pager
+```
+
+CI runs the test suite on each currently maintained Ruby branch and runs StandardRB and Brakeman.
