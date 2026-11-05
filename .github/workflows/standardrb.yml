@@ -41,3 +41,4 @@ jobs:
         with:
           branch: ${{ github.ref_name }}
           commit_message: Apply StandardRB formatting
+          file_pattern: "*.rb *.gemspec Gemfile Rakefile"
