@@ -1,5 +1,5 @@
 require "spec_helper"
-require "SecureRandom"
+require "securerandom"
 
 module Riskified
   describe "Riskified Client" do
