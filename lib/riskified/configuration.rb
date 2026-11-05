@@ -8,6 +8,5 @@ module Riskified
       @default_referrer = nil
       @shop_domain = nil
     end
-    
   end
 end

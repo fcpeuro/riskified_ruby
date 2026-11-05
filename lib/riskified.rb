@@ -1,6 +1,6 @@
 require "riskified/version"
-require 'riskified/configuration'
-require 'riskified/client'
+require "riskified/configuration"
+require "riskified/client"
 
 module Riskified
   class << self
