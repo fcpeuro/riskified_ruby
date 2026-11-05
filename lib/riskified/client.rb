@@ -51,10 +51,10 @@ module Riskified
         method: :post,
         body: formatted_body,
         headers: {
-          "Content-Type": "application/json",
-          ACCEPT: "application/vnd.riskified.com; version=2",
-          "X-RISKIFIED-SHOP-DOMAIN": Riskified.config.shop_domain,
-          "X-RISKIFIED-HMAC-SHA256": calc_hmac(formatted_body)
+          "Content-Type" => "application/json",
+          "ACCEPT" => "application/vnd.riskified.com; version=2",
+          "X-RISKIFIED-SHOP-DOMAIN" => Riskified.config.shop_domain,
+          "X-RISKIFIED-HMAC-SHA256" => calc_hmac(formatted_body)
         }
       )
 
