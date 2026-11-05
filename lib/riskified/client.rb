@@ -1,5 +1,4 @@
 require "typhoeus"
-require "openssl"
 require "json"
 
 require "riskified/configuration"
@@ -40,6 +39,7 @@ module Riskified
     end
 
     def calc_hmac(body)
+      require "openssl"
       OpenSSL::HMAC.hexdigest("SHA256", Riskified.config.auth_token, body)
     end
 

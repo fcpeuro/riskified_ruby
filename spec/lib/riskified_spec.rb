@@ -20,6 +20,10 @@ module Riskified
       allow_any_instance_of(Typhoeus::Request).to receive(:run).and_return(
         double(body: '{"checkout": {}, "order": {}}')
       )
+      if RUBY_VERSION.start_with?("2.1.")
+        # Ruby 2.1's OpenSSL extension crashes on current GitHub-hosted runners.
+        allow_any_instance_of(Riskified::Client).to receive(:calc_hmac).and_return("test-hmac")
+      end
     end
 
     def configure_payload(payload)
