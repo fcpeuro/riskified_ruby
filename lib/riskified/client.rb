@@ -33,6 +33,10 @@ module Riskified
       post_request("/api/refund", body)
     end
 
+    def fulfill(body)
+      post_request("/api/fulfill", body)
+    end
+
     private
 
     def base_url

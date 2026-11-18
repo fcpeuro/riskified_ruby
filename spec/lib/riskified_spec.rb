@@ -67,6 +67,15 @@ module Riskified
         expect(response["order"]).not_to be_falsey
       end
 
+      it "Submits fulfillment to the fulfill endpoint" do
+        expect(Typhoeus::Request).to receive(:new)
+          .with("https://sandbox.riskified.com/api/fulfill", hash_including(method: :post))
+          .and_call_original
+
+        response = JSON.parse(@client.fulfill(order).body)
+        expect(response["order"]).not_to be_falsey
+      end
+
       it "Submits cancellation" do
         @client.create(order)
         response = JSON.parse(@client.cancel(cancelled_order).body)
